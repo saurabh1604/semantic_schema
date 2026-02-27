@@ -3,6 +3,23 @@ import random
 import time
 import math
 import re
+import os
+import sys
+
+# Hack to allow importing config from parent directory
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    from config import config
+except ImportError:
+    # Fallback if run directly or path issue
+    class Config:
+        def __init__(self):
+            self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+            self.data_dir = "data"
+            self.schema_file = "data/schema.json"
+            self.cbo_file = "data/cbo_stats.json"
+            self.logs_file = "data/query_logs.json"
+    config = Config()
 
 class MockLLM:
     """
@@ -12,11 +29,23 @@ class MockLLM:
     def __init__(self, schema_file="data/schema.json"):
         with open(schema_file, 'r') as f:
             self.schema = json.load(f)
+        self.use_real_api = False
+        if config.openai_api_key:
+             # try:
+             #    import openai
+             #    openai.api_key = config.openai_api_key
+             #    self.use_real_api = True
+             # except ImportError:
+             #    print("Warning: openai library not installed. Falling back to Mock.")
+             pass
 
     def extract_intent(self, query):
         """
         Simulates: "Given query X, classify intent as BI, ML, or OPTIMIZER"
         """
+        if self.use_real_api:
+            pass
+
         q = query.upper()
         if "PREDICT" in q or "FORECAST" in q or "FUTURE" in q:
             return "ML"
@@ -29,6 +58,9 @@ class MockLLM:
         """
         Simulates: "Extract key entities from the query that map to our known domains"
         """
+        if self.use_real_api:
+             pass
+
         q = query.upper()
         entities = []
         if "POD" in q: entities.append("POD_INVENTORY")
@@ -39,15 +71,19 @@ class MockLLM:
         return entities
 
 class SynapseEngine:
-    def __init__(self, schema_file="data/schema.json", cbo_file="data/cbo_stats.json", logs_file="data/query_logs.json"):
-        with open(schema_file, 'r') as f:
+    def __init__(self, schema_file=None, cbo_file=None, logs_file=None):
+        self.schema_file = schema_file or config.schema_file
+        self.cbo_file = cbo_file or config.cbo_file
+        self.logs_file = logs_file or config.logs_file
+
+        with open(self.schema_file, 'r') as f:
             self.schema = json.load(f)
-        with open(cbo_file, 'r') as f:
+        with open(self.cbo_file, 'r') as f:
             self.cbo_stats = json.load(f)
-        with open(logs_file, 'r') as f:
+        with open(self.logs_file, 'r') as f:
             self.logs = json.load(f)
 
-        self.llm = MockLLM(schema_file)
+        self.llm = MockLLM(self.schema_file)
 
         # Build Self-Healing Ontology (Mining Query Logs for Tribal Knowledge)
         self.tribal_knowledge = {}
@@ -100,8 +136,6 @@ class SynapseEngine:
         seed_tables = set(self.llm.extract_entities(query))
 
         # Apply Tribal Knowledge (Implicit Joins)
-        # Check if any seed tables trigger a frequent join
-        # For simplicity in simulation: If PATCH_CATALOG is selected, almost always join with PATCH_EXECUTION_LOGS
         if "PATCH_CATALOG" in seed_tables and "PATCH_EXECUTION_LOGS" not in seed_tables:
              seed_tables.add("PATCH_EXECUTION_LOGS")
 
@@ -110,14 +144,13 @@ class SynapseEngine:
             tribal_filters = self.implicit_filters.get(table, [])
             for f in tribal_filters: applied_filters.add(f)
 
-        # Fallback if LLM fails (shouldn't happen with our simulation logic)
+        # Fallback if LLM fails
         if not seed_tables:
-             pass # In real system, ask clarifying question
+             pass
 
         seed_tables = list(seed_tables)
 
         # --- Phase B: CBO Telemetry Pruning (Meso-Pruning) ---
-        # Select columns based on Utility Score U(c) = Usage + (1 - Nulls) + Entropy
         selected_columns = []
         pruned_count = 0
 
@@ -129,27 +162,22 @@ class SynapseEngine:
 
             for col, stats in table_cols.items():
                 # Score Calculation
-                # 1. Null Penalty
                 if row_count > 0:
                     null_ratio = stats['null_count'] / row_count
                 else:
-                    null_ratio = 1.0 # Empty table
+                    null_ratio = 1.0
 
-                if null_ratio > 0.9: # 90% Nulls -> Prune (Legacy/Dead columns)
+                if null_ratio > 0.9:
                     pruned_count += 1
                     continue
 
-                # 2. Entropy / Distinct Values
                 if stats['distinct_values'] <= 1 and stats['null_count'] == 0:
-                     # Constant column (Entropy = 0) -> Prune
                     pruned_count += 1
                     continue
 
-                # 3. Usage Frequency (Simulated by simple list of "Critical" columns)
                 selected_columns.append(col)
 
         # --- Phase C: Value Grounding (Micro-Pruning) ---
-        # Map user "values" to DB "enums"
         query_upper = query.upper()
         if "US EAST" in query_upper and "FND_REGIONS" in seed_tables:
              applied_filters.add("REGION_NAME LIKE '%US East%'")

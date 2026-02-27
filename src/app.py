@@ -3,6 +3,7 @@ import json
 import os
 import pandas as pd
 import time
+from config import config
 from engines.heuristic import HeuristicEngine
 from engines.rag import RAGEngine
 from engines.graph_rag import GraphEngine
@@ -35,10 +36,20 @@ with st.sidebar:
     st.markdown("**Universal Situation-Aware Data Fabric**")
     st.markdown("---")
 
+    # API Key Input
+    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real LLM calls (Mock mode active if empty).")
+    if api_key:
+        config.set_openai_key(api_key)
+        st.success("API Key Set! (Simulation Mode enhanced)")
+    else:
+        st.info("Running in Simulation Mode (No Key)")
+
+    st.markdown("---")
+
     mode = st.radio("Mode", ["Live Query Playground", "Benchmark Comparison", "Architecture View"])
 
     st.markdown("---")
-    st.info("Status: 🟢 Connected to Mock Oracle FaaS")
+    st.caption("Status: 🟢 Connected to Mock Oracle FaaS")
 
 # --- Helper: Render Engine Output ---
 def render_engine_output(engine_name, result, latency):
@@ -134,12 +145,15 @@ elif mode == "Benchmark Comparison":
 
         # Summary Metrics
         col1, col2, col3 = st.columns(3)
-        best_acc = df[df['Engine'] == 'Project SYNAPSE']['Filter Accuracy'].mean()
-        best_lat = df[df['Engine'] == 'Project SYNAPSE']['Latency (ms)'].mean()
+        # Handle case where SYNAPSE might not be in CSV if user ran custom bench
+        synapse_df = df[df['Engine'] == 'Project SYNAPSE']
+        if not synapse_df.empty:
+            best_acc = synapse_df['Filter Accuracy'].mean()
+            best_lat = synapse_df['Latency (ms)'].mean()
 
-        col1.metric("SYNAPSE Accuracy", f"{best_acc*100:.1f}%", "+45% vs RAG")
-        col2.metric("SYNAPSE Latency", f"{best_lat:.2f} ms", "-90% vs LLM")
-        col3.metric("Pruned Columns", "15 avg", "Compute Saved")
+            col1.metric("SYNAPSE Accuracy", f"{best_acc*100:.1f}%", "+45% vs RAG")
+            col2.metric("SYNAPSE Latency", f"{best_lat:.2f} ms", "-90% vs LLM")
+            col3.metric("Pruned Columns", "15 avg", "Compute Saved")
 
         st.dataframe(df, use_container_width=True)
 
