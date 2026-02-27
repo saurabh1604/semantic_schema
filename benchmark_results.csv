@@ -1,0 +1,13 @@
+Engine,Query ID,Query Intent,Latency (ms),Table Precision,Table Recall,Column Precision,Column Recall,Filter Accuracy,Pruned Columns
+Heuristic,q1,BI,0.11,1.0,1.0,0.33,0.33,0.0,0
+Heuristic,q2,BI,0.1,0.67,1.0,0.33,0.33,0.0,0
+Heuristic,q3,ML,0.09,0.4,1.0,0.5,0.4,0.0,0
+Generic RAG,q1,BI,1.86,0.33,0.5,0.33,0.67,0.0,0
+Generic RAG,q2,BI,0.14,0.33,0.5,0.0,0.0,0.0,0
+Generic RAG,q3,ML,0.13,0.33,0.5,0.5,0.4,0.0,0
+GraphRAG,q1,BI,0.02,0,0.0,0,0.0,0.0,0
+GraphRAG,q2,BI,0.07,0.67,1.0,0.33,0.33,0.0,0
+GraphRAG,q3,ML,0.05,0.5,0.5,0.5,0.4,0.0,0
+Project SYNAPSE,q1,BI,0.03,1.0,1.0,0.25,1.0,0.67,20
+Project SYNAPSE,q2,BI,0.02,1.0,1.0,0.25,1.0,0.5,20
+Project SYNAPSE,q3,ML,0.01,0.5,0.5,0.25,0.6,1.0,20

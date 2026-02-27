@@ -1,0 +1,592 @@
+{
+  "POD_INVENTORY": {
+    "row_count": 897997,
+    "columns": {
+      "POD_ID": {
+        "null_count": 39379,
+        "distinct_values": 197894,
+        "data_distribution": "uniform"
+      },
+      "POD_NAME": {
+        "null_count": 23593,
+        "distinct_values": 170284,
+        "data_distribution": "uniform"
+      },
+      "REGION_ID": {
+        "null_count": 43238,
+        "distinct_values": 20,
+        "data_distribution": "uniform"
+      },
+      "TENANT_TIER": {
+        "null_count": 33629,
+        "distinct_values": 413615,
+        "data_distribution": "uniform"
+      },
+      "IS_TEST_POD": {
+        "null_count": 53669,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "CPU_CORES": {
+        "null_count": 32101,
+        "distinct_values": 664916,
+        "data_distribution": "uniform"
+      },
+      "MEMORY_GB": {
+        "null_count": 74594,
+        "distinct_values": 457804,
+        "data_distribution": "uniform"
+      },
+      "CREATION_DATE": {
+        "null_count": 79650,
+        "distinct_values": 642793,
+        "data_distribution": "uniform"
+      },
+      "STATUS_CD": {
+        "null_count": 35082,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 878254,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 824387,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 859099,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 879567,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 816882,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 811848,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 870325,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 873434,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 845727,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 895432,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "PATCH_EXECUTION_LOGS": {
+    "row_count": 463489,
+    "columns": {
+      "LOG_ID": {
+        "null_count": 1859,
+        "distinct_values": 258043,
+        "data_distribution": "uniform"
+      },
+      "POD_ID": {
+        "null_count": 26940,
+        "distinct_values": 109133,
+        "data_distribution": "uniform"
+      },
+      "PATCH_ID": {
+        "null_count": 30796,
+        "distinct_values": 294711,
+        "data_distribution": "uniform"
+      },
+      "START_TIME": {
+        "null_count": 20945,
+        "distinct_values": 9558,
+        "data_distribution": "uniform"
+      },
+      "END_TIME": {
+        "null_count": 22450,
+        "distinct_values": 210768,
+        "data_distribution": "uniform"
+      },
+      "STATUS_CD": {
+        "null_count": 25258,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "ERROR_CODE": {
+        "null_count": 20262,
+        "distinct_values": 40492,
+        "data_distribution": "uniform"
+      },
+      "SLA_BREACH_FLG": {
+        "null_count": 3059,
+        "distinct_values": 36258,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 450007,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 452350,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 422512,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 418194,
+        "distinct_values": 8,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 420998,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 431353,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 449124,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 453940,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 433240,
+        "distinct_values": 7,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 447571,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "SERVICE_REQUESTS": {
+    "row_count": 60778,
+    "columns": {
+      "SR_ID": {
+        "null_count": 532,
+        "distinct_values": 25824,
+        "data_distribution": "uniform"
+      },
+      "POD_ID": {
+        "null_count": 5375,
+        "distinct_values": 2373,
+        "data_distribution": "uniform"
+      },
+      "SEVERITY_LEVEL": {
+        "null_count": 291,
+        "distinct_values": 1418,
+        "data_distribution": "uniform"
+      },
+      "SUMMARY": {
+        "null_count": 1037,
+        "distinct_values": 9115,
+        "data_distribution": "uniform"
+      },
+      "DESCRIPTION": {
+        "null_count": 1656,
+        "distinct_values": 4300,
+        "data_distribution": "uniform"
+      },
+      "CREATED_BY": {
+        "null_count": 798,
+        "distinct_values": 15870,
+        "data_distribution": "uniform"
+      },
+      "CREATION_DATE": {
+        "null_count": 5809,
+        "distinct_values": 37490,
+        "data_distribution": "uniform"
+      },
+      "CLOSED_DATE": {
+        "null_count": 2361,
+        "distinct_values": 27584,
+        "data_distribution": "uniform"
+      },
+      "RESOLUTION_CODE": {
+        "null_count": 230,
+        "distinct_values": 47090,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 60072,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 60184,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 60537,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 58269,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 58488,
+        "distinct_values": 8,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 59911,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 55442,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 56508,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 55879,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 56057,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "FND_REGIONS": {
+    "row_count": 998619,
+    "columns": {
+      "REGION_ID": {
+        "null_count": 34733,
+        "distinct_values": 20,
+        "data_distribution": "uniform"
+      },
+      "REGION_NAME": {
+        "null_count": 9119,
+        "distinct_values": 866545,
+        "data_distribution": "uniform"
+      },
+      "DATA_CENTER_CODE": {
+        "null_count": 36004,
+        "distinct_values": 679048,
+        "data_distribution": "uniform"
+      },
+      "GEO_REGION": {
+        "null_count": 24141,
+        "distinct_values": 859912,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 933512,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 970144,
+        "distinct_values": 8,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 924201,
+        "distinct_values": 0,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 908368,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 929029,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 968871,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 976279,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 937232,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 966696,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 907172,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "PATCH_CATALOG": {
+    "row_count": 520245,
+    "columns": {
+      "PATCH_ID": {
+        "null_count": 46104,
+        "distinct_values": 78479,
+        "data_distribution": "uniform"
+      },
+      "PATCH_NAME": {
+        "null_count": 15113,
+        "distinct_values": 59903,
+        "data_distribution": "uniform"
+      },
+      "VERSION_NUM": {
+        "null_count": 8973,
+        "distinct_values": 57730,
+        "data_distribution": "uniform"
+      },
+      "RELEASE_DATE": {
+        "null_count": 41006,
+        "distinct_values": 209270,
+        "data_distribution": "uniform"
+      },
+      "IS_CRITICAL": {
+        "null_count": 47003,
+        "distinct_values": 286152,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 475920,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 519467,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 488738,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 514274,
+        "distinct_values": 3,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 473197,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 473736,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 519780,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 520003,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 479745,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 489136,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "POD_INVENTORY_BACKUP": {
+    "row_count": 238,
+    "columns": {
+      "POD_ID": {
+        "null_count": 18,
+        "distinct_values": 218,
+        "data_distribution": "uniform"
+      },
+      "POD_NAME": {
+        "null_count": 2,
+        "distinct_values": 218,
+        "data_distribution": "uniform"
+      },
+      "BACKUP_DATE": {
+        "null_count": 17,
+        "distinct_values": 163,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 234,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 219,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 236,
+        "distinct_values": 0,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 227,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 216,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 215,
+        "distinct_values": 10,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 224,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 231,
+        "distinct_values": 0,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 223,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 236,
+        "distinct_values": 8,
+        "data_distribution": "uniform"
+      }
+    }
+  },
+  "LEGACY_PATCH_LOGS": {
+    "row_count": 361,
+    "columns": {
+      "LOG_ID": {
+        "null_count": 32,
+        "distinct_values": 108,
+        "data_distribution": "uniform"
+      },
+      "POD_NAME": {
+        "null_count": 6,
+        "distinct_values": 231,
+        "data_distribution": "uniform"
+      },
+      "STATUS": {
+        "null_count": 33,
+        "distinct_values": 160,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE1": {
+        "null_count": 340,
+        "distinct_values": 5,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_1": {
+        "null_count": 347,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE2": {
+        "null_count": 357,
+        "distinct_values": 9,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_2": {
+        "null_count": 350,
+        "distinct_values": 6,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE3": {
+        "null_count": 347,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_3": {
+        "null_count": 347,
+        "distinct_values": 4,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE4": {
+        "null_count": 339,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_4": {
+        "null_count": 341,
+        "distinct_values": 8,
+        "data_distribution": "uniform"
+      },
+      "ATTRIBUTE5": {
+        "null_count": 355,
+        "distinct_values": 2,
+        "data_distribution": "uniform"
+      },
+      "LEGACY_COL_5": {
+        "null_count": 331,
+        "distinct_values": 1,
+        "data_distribution": "uniform"
+      }
+    }
+  }
+}

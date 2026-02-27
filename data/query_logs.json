@@ -1,0 +1,1962 @@
+[
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY"
+    ],
+    "columns": [
+      "POD_ID",
+      "POD_NAME",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'"
+    ],
+    "joins": []
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "columns": [
+      "POD_NAME",
+      "PATCH_ID",
+      "STATUS_CD"
+    ],
+    "filters": [
+      "IS_TEST_POD = 'N'"
+    ],
+    "joins": [
+      "POD_INVENTORY.POD_ID = PATCH_EXECUTION_LOGS.POD_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "columns": [
+      "PATCH_NAME",
+      "SLA_BREACH_FLG"
+    ],
+    "filters": [
+      "IS_CRITICAL = 'Y'"
+    ],
+    "joins": [
+      "PATCH_EXECUTION_LOGS.PATCH_ID = PATCH_CATALOG.PATCH_ID"
+    ]
+  },
+  {
+    "tables": [
+      "LEGACY_PATCH_LOGS"
+    ],
+    "columns": [
+      "*"
+    ],
+    "filters": [],
+    "joins": []
+  },
+  {
+    "tables": [
+      "LEGACY_PATCH_LOGS"
+    ],
+    "columns": [
+      "*"
+    ],
+    "filters": [],
+    "joins": []
+  },
+  {
+    "tables": [
+      "LEGACY_PATCH_LOGS"
+    ],
+    "columns": [
+      "*"
+    ],
+    "filters": [],
+    "joins": []
+  },
+  {
+    "tables": [
+      "LEGACY_PATCH_LOGS"
+    ],
+    "columns": [
+      "*"
+    ],
+    "filters": [],
+    "joins": []
+  },
+  {
+    "tables": [
+      "LEGACY_PATCH_LOGS"
+    ],
+    "columns": [
+      "*"
+    ],
+    "filters": [],
+    "joins": []
+  }
+]

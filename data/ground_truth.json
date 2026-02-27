@@ -1,0 +1,58 @@
+[
+  {
+    "id": "q1",
+    "query": "Show me active pods in US East region",
+    "intent": "BI",
+    "expected_tables": [
+      "POD_INVENTORY",
+      "FND_REGIONS"
+    ],
+    "expected_columns": [
+      "POD_NAME",
+      "REGION_NAME",
+      "STATUS_CD"
+    ],
+    "required_filters": [
+      "IS_TEST_POD = 'N'",
+      "STATUS_CD = 'ACTIVE'",
+      "REGION_NAME LIKE '%US East%'"
+    ]
+  },
+  {
+    "id": "q2",
+    "query": "List critical patch failures last week",
+    "intent": "BI",
+    "expected_tables": [
+      "PATCH_EXECUTION_LOGS",
+      "PATCH_CATALOG"
+    ],
+    "expected_columns": [
+      "PATCH_NAME",
+      "STATUS_CD",
+      "END_TIME"
+    ],
+    "required_filters": [
+      "STATUS_CD = 'FAILED'",
+      "IS_CRITICAL = 'Y'"
+    ]
+  },
+  {
+    "id": "q3",
+    "query": "Predict pod memory usage for next upgrade",
+    "intent": "ML",
+    "expected_tables": [
+      "POD_INVENTORY",
+      "PATCH_EXECUTION_LOGS"
+    ],
+    "expected_columns": [
+      "MEMORY_GB",
+      "CPU_CORES",
+      "POD_ID",
+      "START_TIME",
+      "END_TIME"
+    ],
+    "required_filters": [
+      "IS_TEST_POD = 'N'"
+    ]
+  }
+]
