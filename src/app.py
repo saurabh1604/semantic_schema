@@ -3,6 +3,11 @@ import json
 import os
 import pandas as pd
 import time
+import sys
+
+# Add src to sys.path to import modules correctly
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+
 from config import config
 from engines.heuristic import HeuristicEngine
 from engines.rag import RAGEngine
@@ -17,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Initialize Engines ---
+# --- Initialize Engines (Cached) ---
 @st.cache_resource
 def load_engines():
     return {
@@ -37,19 +42,23 @@ with st.sidebar:
     st.markdown("---")
 
     # API Key Input
-    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real LLM calls (Mock mode active if empty).")
+    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real GPT-4o calls.")
     if api_key:
         config.set_openai_key(api_key)
-        st.success("API Key Set! (Simulation Mode enhanced)")
+        # Force reload of engines to pick up the key
+        st.cache_resource.clear()
+        engines = load_engines()
+        st.success("API Key Set! (Real AI Mode Active)")
+        mode_indicator = "🟢 Real AI Mode (GPT-4o)"
     else:
-        st.info("Running in Simulation Mode (No Key)")
+        mode_indicator = "🟡 Simulation Mode (Mock LLM)"
 
     st.markdown("---")
 
     mode = st.radio("Mode", ["Live Query Playground", "Benchmark Comparison", "Architecture View"])
 
     st.markdown("---")
-    st.caption("Status: 🟢 Connected to Mock Oracle FaaS")
+    st.caption(f"Status: {mode_indicator}")
 
 # --- Helper: Render Engine Output ---
 def render_engine_output(engine_name, result, latency):
@@ -58,7 +67,7 @@ def render_engine_output(engine_name, result, latency):
 
         with col1:
             st.markdown("#### 🏗️ Selected Tables")
-            if result['tables']:
+            if result.get('tables'):
                 for t in result['tables']:
                     st.code(t, language="sql")
             else:
@@ -66,13 +75,13 @@ def render_engine_output(engine_name, result, latency):
 
         with col2:
             st.markdown("#### 🎯 Selected Columns")
-            if result['columns']:
+            if result.get('columns'):
                 st.write(result['columns'])
             else:
                 st.warning("No columns selected")
 
         st.markdown("#### 🌪️ Filters & Value Grounding")
-        if result['filters']:
+        if result.get('filters'):
             for f in result['filters']:
                 st.success(f"Filter Applied: `{f}`")
         else:
@@ -84,6 +93,7 @@ def render_engine_output(engine_name, result, latency):
 # --- Tab 1: Live Query Playground ---
 if mode == "Live Query Playground":
     st.header("🧠 Live Cognitive Query Engine")
+    st.markdown(f"**Current Mode:** {mode_indicator}")
     st.markdown("Test the **Natural Language -> Schema -> Value** translation in real-time.")
 
     # Preset Queries
@@ -125,11 +135,15 @@ if mode == "Live Query Playground":
         with col_process:
             st.subheader("🧠 Thought Process")
             st.markdown("#### 1. Intent & Entities")
-            st.info(f"Entities: {synapse_out.get('tables', [])}")
+            if api_key:
+                st.info("Called OpenAI GPT-4o for Intent Classification & Entity Extraction.")
+            else:
+                st.info("Simulated Intent Classification based on keywords.")
+            st.write(f"Entities: {synapse_out.get('tables', [])}")
 
             st.markdown("#### 2. Tribal Knowledge")
             st.caption("Checking V$SQLAREA for implicit rules...")
-            if synapse_out['filters']:
+            if synapse_out.get('filters'):
                 st.write("Found implicit filters from historical logs.")
 
             st.markdown("#### 3. CBO Telemetry")
@@ -145,7 +159,6 @@ elif mode == "Benchmark Comparison":
 
         # Summary Metrics
         col1, col2, col3 = st.columns(3)
-        # Handle case where SYNAPSE might not be in CSV if user ran custom bench
         synapse_df = df[df['Engine'] == 'Project SYNAPSE']
         if not synapse_df.empty:
             best_acc = synapse_df['Filter Accuracy'].mean()

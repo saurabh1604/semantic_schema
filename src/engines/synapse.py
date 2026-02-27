@@ -6,6 +6,16 @@ import re
 import os
 import sys
 
+# Import RealLLM for actual API integration
+try:
+    from llm_client import RealLLM
+except ImportError:
+    # If path issue
+    try:
+        from .llm_client import RealLLM
+    except ImportError:
+        RealLLM = None
+
 # Hack to allow importing config from parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
@@ -23,44 +33,20 @@ except ImportError:
 
 class MockLLM:
     """
-    Simulates GPT-5.2 interactions.
-    In a real deployment, this would use `openai.Completion.create`
+    Mock LLM for Simulation Mode.
+    Deterministically simulates 'gpt-5.2' behavior.
     """
     def __init__(self, schema_file="data/schema.json"):
         with open(schema_file, 'r') as f:
             self.schema = json.load(f)
-        self.use_real_api = False
-        if config.openai_api_key:
-             # try:
-             #    import openai
-             #    openai.api_key = config.openai_api_key
-             #    self.use_real_api = True
-             # except ImportError:
-             #    print("Warning: openai library not installed. Falling back to Mock.")
-             pass
 
     def extract_intent(self, query):
-        """
-        Simulates: "Given query X, classify intent as BI, ML, or OPTIMIZER"
-        """
-        if self.use_real_api:
-            pass
-
         q = query.upper()
-        if "PREDICT" in q or "FORECAST" in q or "FUTURE" in q:
-            return "ML"
-        elif "SCHEDULE" in q or "OPTIMIZE" in q or "PLAN" in q:
-            return "OPTIMIZER"
-        else:
-            return "BI"
+        if "PREDICT" in q or "FORECAST" in q or "FUTURE" in q: return "ML"
+        elif "SCHEDULE" in q or "OPTIMIZE" in q or "PLAN" in q: return "OPTIMIZER"
+        else: return "BI"
 
     def extract_entities(self, query):
-        """
-        Simulates: "Extract key entities from the query that map to our known domains"
-        """
-        if self.use_real_api:
-             pass
-
         q = query.upper()
         entities = []
         if "POD" in q: entities.append("POD_INVENTORY")
@@ -83,7 +69,13 @@ class SynapseEngine:
         with open(self.logs_file, 'r') as f:
             self.logs = json.load(f)
 
-        self.llm = MockLLM(self.schema_file)
+        self.mock_llm = MockLLM(self.schema_file)
+        self.real_llm = None
+        if config.openai_api_key and RealLLM:
+             try:
+                self.real_llm = RealLLM(config.openai_api_key)
+             except Exception as e:
+                print(f"Error initializing RealLLM: {e}")
 
         # Build Self-Healing Ontology (Mining Query Logs for Tribal Knowledge)
         self.tribal_knowledge = {}
@@ -128,12 +120,20 @@ class SynapseEngine:
         """
         start_time = time.time()
 
-        # 1. Intent Classification (LLM Agent)
-        intent = self.llm.extract_intent(query)
+        # 1. Intent Classification
+        if self.real_llm:
+            intent = self.real_llm.extract_intent(query)
+        else:
+            intent = self.mock_llm.extract_intent(query)
 
         # --- Phase A: Self-Healing Ontology (Macro-Pruning & Intent) ---
-        # Instead of keyword matching, we ask the "LLM" for entities
-        seed_tables = set(self.llm.extract_entities(query))
+        if self.real_llm:
+            # Summarize Schema for prompt efficiency
+            schema_summary = "\n".join([f"{t}: {d['description']}" for t, d in self.schema.items()])
+            extracted_tables = self.real_llm.extract_entities(query, schema_summary)
+            seed_tables = set(extracted_tables)
+        else:
+            seed_tables = set(self.mock_llm.extract_entities(query))
 
         # Apply Tribal Knowledge (Implicit Joins)
         if "PATCH_CATALOG" in seed_tables and "PATCH_EXECUTION_LOGS" not in seed_tables:
@@ -144,7 +144,7 @@ class SynapseEngine:
             tribal_filters = self.implicit_filters.get(table, [])
             for f in tribal_filters: applied_filters.add(f)
 
-        # Fallback if LLM fails
+        # Fallback if LLM fails (empty seed)
         if not seed_tables:
              pass
 
@@ -160,8 +160,8 @@ class SynapseEngine:
             table_cols = self.cbo_stats[table]['columns']
             row_count = self.cbo_stats[table]['row_count']
 
+            # CBO Pruning Logic
             for col, stats in table_cols.items():
-                # Score Calculation
                 if row_count > 0:
                     null_ratio = stats['null_count'] / row_count
                 else:

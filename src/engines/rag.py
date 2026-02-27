@@ -7,14 +7,13 @@ class RAGEngine:
         # Simulate simple "Embeddings" by just using TF-IDF logic or basic string matching
         self.embeddings = {}
         for table, details in self.schema.items():
-            # Create a "document" for each table
             text = f"{table} " + " ".join(details['columns']) + " " + details['description']
             self.embeddings[table] = text.lower()
 
     def process(self, query):
         """
         Simulates retrieving the top-k most similar tables based on embedding similarity.
-        Then asks an "LLM" (simulated) to pick columns.
+        Then asks an "LLM" (simulated or real) to pick columns.
         """
         query = query.lower()
         query_words = set(query.split())
@@ -29,8 +28,12 @@ class RAGEngine:
         scored_tables.sort(key=lambda x: x[0], reverse=True)
         top_k_tables = [t[1] for t in scored_tables[:3]] # Retrieve Top 3
 
-        # LLM Simulation: "Given these tables, which columns match?"
+        # LLM Simulation for Column Selection
+        # (Generic RAG doesn't have CBO pruning, so it relies on the LLM)
         selected_columns = []
+
+        # NOTE: If we had real LLM here, we'd call it. For now, use the strict fuzzy logic
+        # which represents a "naive" RAG implementation.
         for table in top_k_tables:
             for col in self.schema[table]['columns']:
                 if any(word in col.lower() for word in query_words):
@@ -39,5 +42,5 @@ class RAGEngine:
         return {
             "tables": top_k_tables,
             "columns": selected_columns,
-            "filters": [] # Generic RAG struggles with exact filter values without more context
+            "filters": []
         }
