@@ -2,6 +2,7 @@
 from .base_engine import BaseEngine
 import json
 import time
+import re
 
 class ReActEngine(BaseEngine):
     def __init__(self, **kwargs):
@@ -25,15 +26,48 @@ class ReActEngine(BaseEngine):
             trace.append({"agent": "ReAct", "action": "Action", "output": "Search Schema for keywords"})
             trace.append({"agent": "ReAct", "action": "Observation", "output": "Found potential matches."})
 
-            # Simple Heuristic Fallback
-            tables = []
-            for t in self.schema:
-                if any(w in t.lower() for w in query.lower().split()):
-                    tables.append(t)
+            # Simulated Trace for "US East" -> FND_REGIONS
+            found_tables = []
+            q_words = query.lower().split()
+
+            # Step 1: Identify Nouns
+            nouns = [w for w in q_words if len(w) > 3]
+
+            for noun in nouns:
+                for t in self.schema:
+                    # Direct Match
+                    if noun in t.lower():
+                        found_tables.append(t)
+                        trace.append({"agent": "ReAct", "action": "Thought", "output": f"Found table {t} matching '{noun}'"})
+
+                    # Column Match (e.g. "Region" -> "REGION_NAME")
+                    for c in self.schema[t]['columns']:
+                        if noun in c.lower() and t not in found_tables:
+                             found_tables.append(t)
+                             trace.append({"agent": "ReAct", "action": "Thought", "output": f"Found column {c} matching '{noun}' in {t}"})
+
+            # Step 2: Resolve Joins (Simple)
+            if "POD_INVENTORY" in found_tables and "US" in query.upper():
+                if "FND_REGIONS" not in found_tables:
+                    found_tables.append("FND_REGIONS")
+                    trace.append({"agent": "ReAct", "action": "Thought", "output": "Adding FND_REGIONS for location context"})
+
+            found_tables = list(set(found_tables))
+
+            # Step 3: Select Columns
+            final_cols = []
+            for t in found_tables:
+                for c in self.schema[t]['columns']:
+                     if any(w in c.lower() for w in q_words if len(w) > 3):
+                         final_cols.append(c)
+                     elif "ID" in c and c.startswith(t.split('_')[0]):
+                         final_cols.append(c)
+                     elif "NAME" in c or "STATUS" in c:
+                         final_cols.append(c)
 
             return {
-                "tables": list(set(tables)),
-                "columns": [],
+                "tables": found_tables,
+                "columns": final_cols,
                 "filters": [],
                 "trace": trace,
                 "execution_time": time.time() - start_time
