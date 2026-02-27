@@ -53,7 +53,7 @@ st.markdown("""
 
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
-def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
+def load_engines(api_key=None, model="gpt-5.2", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
     synapse = SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files, api_key=api_key)
     shared_schema = synapse.schema
     return {
@@ -67,12 +67,7 @@ def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, 
 with st.sidebar:
     st.header("Configuration")
 
-    # Model Selection (Clean)
-    model_choice = st.selectbox("Model", ["gpt-4o", "gpt-4-turbo"], index=0)
-
-    st.divider()
-
-    # Data Upload
+    # Data Upload Only
     st.subheader("Data Source")
     upload_mode = st.radio("Input Type", ["JSON Schema", "CSV Files"])
 
@@ -109,20 +104,14 @@ with st.sidebar:
                 csv_file_paths.append(path)
             data_source_msg = f"{len(csv_file_paths)} CSVs Loaded"
 
-    # Load (API Key from Config/Env)
+    # Load (API Key from Config/Env) - Hidden from UI
     api_key = config.openai_api_key
-    engines = load_engines(api_key, model_choice, custom_schema_path, custom_cbo_path, custom_logs_path, csv_file_paths)
-
-    # Debug info for API Key
-    st.divider()
-    if api_key:
-        st.caption(f"🔑 API Key: Detected (Active)")
-    else:
-        st.caption("🔑 API Key: Not Found (Simulating)")
+    # Default model to "gpt-5.2" as requested
+    engines = load_engines(api_key, "gpt-5.2", custom_schema_path, custom_cbo_path, custom_logs_path, csv_file_paths)
 
     if st.button("Reload System"):
         st.cache_resource.clear()
-        st.experimental_rerun()
+        st.rerun()
 
     st.divider()
     mode = st.radio("View", ["Query Playground", "Ontology Graph", "Benchmark", "Architecture"])
