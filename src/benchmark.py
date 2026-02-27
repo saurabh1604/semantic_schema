@@ -8,6 +8,7 @@ from engines.heuristic import HeuristicEngine
 from engines.rag import RAGEngine
 from engines.graph_rag import GraphEngine
 from engines.synapse import SynapseEngine
+from engines.aegis import AegisEngine
 
 DATA_DIR = "data"
 RESULTS_FILE = "benchmark_results.csv"
@@ -59,7 +60,8 @@ def run_benchmark():
         "Heuristic": HeuristicEngine(),
         "Generic RAG": RAGEngine(),
         "GraphRAG": GraphEngine(),
-        "Project SYNAPSE": SynapseEngine()
+        "Project SYNAPSE": SynapseEngine(),
+        "Project AEGIS": AegisEngine()
     }
 
     results = []

@@ -14,6 +14,7 @@ from engines.heuristic import HeuristicEngine
 from engines.rag import RAGEngine
 from engines.graph_rag import GraphEngine
 from engines.synapse import SynapseEngine
+from engines.aegis import AegisEngine
 
 # --- Configuration ---
 st.set_page_config(
@@ -53,11 +54,14 @@ st.markdown("""
 
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
-def load_engines(api_key=None, model="gpt-5.2", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
+def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
     synapse = SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files, api_key=api_key)
+    aegis = AegisEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files, api_key=api_key)
+
     shared_schema = synapse.schema
     return {
         "Synapse": synapse,
+        "Aegis": aegis, # The Challenger
         "RAG": RAGEngine(schema_dict=shared_schema, api_key=api_key),
         "Graph": GraphEngine(schema_dict=shared_schema, api_key=api_key),
         "Heuristic": HeuristicEngine(schema_dict=shared_schema, api_key=api_key)
@@ -67,7 +71,7 @@ def load_engines(api_key=None, model="gpt-5.2", schema_file=None, cbo_file=None,
 with st.sidebar:
     st.header("Configuration")
 
-    # Data Upload Only
+    # Data Upload
     st.subheader("Data Source")
     upload_mode = st.radio("Input Type", ["JSON Schema", "CSV Files"])
 
@@ -104,7 +108,7 @@ with st.sidebar:
                 csv_file_paths.append(path)
             data_source_msg = f"{len(csv_file_paths)} CSVs Loaded"
 
-    # Load (API Key from Config/Env) - Hidden from UI
+    # Load (API Key from Config/Env)
     api_key = config.openai_api_key
     # Default model to "gpt-5.2" as requested
     engines = load_engines(api_key, "gpt-5.2", custom_schema_path, custom_cbo_path, custom_logs_path, csv_file_paths)
@@ -204,7 +208,6 @@ if mode == "Query Playground":
                 lat = (time.time() - start) * 1000
                 results[name] = {"out": out, "lat": lat}
             except Exception as e:
-                # Log error but don't crash app
                 results[name] = {"out": {"error": str(e)}, "lat": 0}
 
         synapse_res = results["Synapse"]
@@ -213,16 +216,17 @@ if mode == "Query Playground":
         c_main, c_side = st.columns([2, 1])
 
         with c_main:
-            if 'execution_output' in synapse_res["out"]:
+            if 'execution_output' in synapse_res.get("out", {}):
                 render_execution(synapse_res["out"]['execution_output'])
             st.divider()
-            if 'trace' in synapse_res["out"]:
+            if 'trace' in synapse_res.get("out", {}):
                 render_trace(synapse_res["out"]['trace'])
 
         with c_side:
             st.subheader("Engine Comparison")
             # Display Synapse First (Hero)
-            render_engine_output("Synapse", synapse_res["out"], synapse_res["lat"])
+            if "Synapse" in results:
+                render_engine_output("Synapse", results["Synapse"]["out"], results["Synapse"]["lat"])
 
             # Display Others
             for name, res in results.items():
