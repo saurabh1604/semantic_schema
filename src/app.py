@@ -195,30 +195,39 @@ if mode == "Query Playground":
         run = st.button("Run")
 
     if run:
-        # Run Synapse
-        start = time.time()
-        synapse_res = engines["Synapse"].process(query)
-        synapse_lat = (time.time() - start) * 1000
+        # Run ALL engines for Live Comparison
+        results = {}
+        for name, engine in engines.items():
+            start = time.time()
+            try:
+                out = engine.process(query)
+                lat = (time.time() - start) * 1000
+                results[name] = {"out": out, "lat": lat}
+            except Exception as e:
+                # Log error but don't crash app
+                results[name] = {"out": {"error": str(e)}, "lat": 0}
 
-        # Run Baseline (RAG)
-        start = time.time()
-        rag_res = engines["RAG"].process(query)
-        rag_lat = (time.time() - start) * 1000
+        synapse_res = results["Synapse"]
 
         # Layout
         c_main, c_side = st.columns([2, 1])
 
         with c_main:
-            if 'execution_output' in synapse_res:
-                render_execution(synapse_res['execution_output'])
+            if 'execution_output' in synapse_res["out"]:
+                render_execution(synapse_res["out"]['execution_output'])
             st.divider()
-            if 'trace' in synapse_res:
-                render_trace(synapse_res['trace'])
+            if 'trace' in synapse_res["out"]:
+                render_trace(synapse_res["out"]['trace'])
 
         with c_side:
             st.subheader("Engine Comparison")
-            render_engine_output("Synapse", synapse_res, synapse_lat)
-            render_engine_output("Standard RAG", rag_res, rag_lat)
+            # Display Synapse First (Hero)
+            render_engine_output("Synapse", synapse_res["out"], synapse_res["lat"])
+
+            # Display Others
+            for name, res in results.items():
+                if name == "Synapse": continue
+                render_engine_output(name, res["out"], res["lat"])
 
 # 2. Ontology Graph
 elif mode == "Ontology Graph":
