@@ -20,6 +20,7 @@ class RealLLM:
 
     def _call_gpt(self, system_prompt, user_prompt):
         if not self.available:
+            print("OpenAI client not available.")
             return None
 
         try:
@@ -52,6 +53,7 @@ class RealLLM:
         Output ONLY the category name."""
 
         result = self._call_gpt(system, query)
+        print(f"[DEBUG] Intent Extraction Result: {result}")
         return result.strip() if result else "BI"
 
     def extract_entities(self, query, schema_summary):
@@ -68,11 +70,23 @@ class RealLLM:
         Return a JSON list of table names ONLY. Example: ["TABLE_A", "TABLE_B"]"""
 
         result = self._call_gpt(system, query)
+        print(f"[DEBUG] Entity Extraction Result: {result}")
+
+        if not result:
+            return []
+
         try:
             # Clean up potential markdown formatting
-            result = result.replace("```json", "").replace("```", "").strip()
-            return json.loads(result)
-        except:
+            cleaned_result = result.replace("```json", "").replace("```", "").strip()
+            # If the LLM returned a plain string list or comma separated, try to handle it
+            if not cleaned_result.startswith("["):
+                 # Fallback parsing attempt
+                 if "," in cleaned_result:
+                    return [x.strip() for x in cleaned_result.split(",")]
+                 return [cleaned_result]
+            return json.loads(cleaned_result)
+        except Exception as e:
+            print(f"[ERROR] Failed to parse entities JSON: {e}")
             return []
 
     def select_columns(self, query, table_name, columns):
@@ -89,7 +103,7 @@ class RealLLM:
 
         result = self._call_gpt(system, query)
         try:
-            result = result.replace("```json", "").replace("```", "").strip()
-            return json.loads(result)
+            cleaned_result = result.replace("```json", "").replace("```", "").strip()
+            return json.loads(cleaned_result)
         except:
             return []

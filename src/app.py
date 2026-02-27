@@ -45,7 +45,6 @@ with st.sidebar:
     api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real GPT-4o calls.")
     if api_key:
         config.set_openai_key(api_key)
-        # Force reload of engines to pick up the key
         st.cache_resource.clear()
         engines = load_engines()
         st.success("API Key Set! (Real AI Mode Active)")
@@ -145,6 +144,8 @@ if mode == "Live Query Playground":
             st.caption("Checking V$SQLAREA for implicit rules...")
             if synapse_out.get('filters'):
                 st.write("Found implicit filters from historical logs.")
+            else:
+                st.write("No implicit filters found.")
 
             st.markdown("#### 3. CBO Telemetry")
             st.caption("Querying DBA_TAB_COL_STATISTICS...")
@@ -153,6 +154,7 @@ if mode == "Live Query Playground":
 # --- Tab 2: Benchmark Comparison ---
 elif mode == "Benchmark Comparison":
     st.header("📊 Engine Performance Benchmark")
+    st.info("Note: These results are from a pre-computed simulation run (`src/benchmark.py`). Live query metrics are shown in the Playground tab.")
 
     if os.path.exists("benchmark_results.csv"):
         df = pd.read_csv("benchmark_results.csv")
