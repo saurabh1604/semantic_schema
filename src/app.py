@@ -26,13 +26,13 @@ st.set_page_config(
 
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
-def load_engines(api_key=None, model="gpt-4o"):
-    # Re-initialize engines with the new key and model
+def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, logs_file=None):
+    # Re-initialize engines with the new key, model, and potentially custom data paths
     return {
-        "Project SYNAPSE": SynapseEngine(model=model),
-        "Generic RAG": RAGEngine(),
-        "GraphRAG": GraphEngine(),
-        "Heuristic Baseline": HeuristicEngine()
+        "Project SYNAPSE": SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file),
+        "Generic RAG": RAGEngine(schema_file=schema_file),
+        "GraphRAG": GraphEngine(schema_file=schema_file),
+        "Heuristic Baseline": HeuristicEngine(schema_file=schema_file)
     }
 
 # --- Sidebar ---
@@ -51,16 +51,37 @@ with st.sidebar:
     mode_indicator = "🟡 Simulation Mode (Mock LLM)"
     if api_key:
         config.set_openai_key(api_key)
-        # Force reload if key/model changes
-        st.cache_resource.clear()
-        engines = load_engines(api_key, model_choice)
-        st.success(f"Connected to {model_choice} 🟢")
         mode_indicator = f"🟢 Real AI Mode ({model_choice})"
-    else:
-        engines = load_engines() # Load default mock engines
 
     st.markdown("---")
-    mode = st.radio("Mode", ["Live Query Playground", "Benchmark Comparison", "Architecture View"])
+    st.subheader("📁 Data Upload (Optional)")
+    schema_up = st.file_uploader("Upload Schema (schema.json)", type="json")
+    cbo_up = st.file_uploader("Upload CBO Stats (cbo_stats.json)", type="json")
+    logs_up = st.file_uploader("Upload Query Logs (query_logs.json)", type="json")
+
+    # Check if we should use uploaded files
+    custom_schema_path = None
+    custom_cbo_path = None
+    custom_logs_path = None
+
+    if schema_up and cbo_up and logs_up:
+        # Save to temp and use
+        # For simplicity in this session, we can write to 'data/custom_...'
+        custom_schema_path = "data/custom_schema.json"
+        custom_cbo_path = "data/custom_cbo_stats.json"
+        custom_logs_path = "data/custom_query_logs.json"
+
+        with open(custom_schema_path, "wb") as f: f.write(schema_up.getbuffer())
+        with open(custom_cbo_path, "wb") as f: f.write(cbo_up.getbuffer())
+        with open(custom_logs_path, "wb") as f: f.write(logs_up.getbuffer())
+        st.success("Custom Data Loaded!")
+
+    # Reload Engines if key/model/data changes
+    # We use st.session_state to track changes if needed, but st.cache_resource + args works
+    engines = load_engines(api_key, model_choice, custom_schema_path, custom_cbo_path, custom_logs_path)
+
+    st.markdown("---")
+    mode = st.radio("Mode", ["Live Query Playground", "Live Ontology Graph", "Benchmark Comparison", "Architecture View"])
     st.markdown("---")
     st.caption(f"Status: {mode_indicator}")
 
@@ -115,13 +136,22 @@ def render_final_execution(output):
 
     with col2:
         if output.get('type') == 'chart':
-            data = output.get('data', {})
-            df = pd.DataFrame(list(data.items()), columns=['Category', 'Value'])
-            st.bar_chart(df.set_index('Category'))
+            if 'data' in output and output['data']:
+                df = pd.DataFrame(output['data'])
+                # If we have categorical and numerical columns identified
+                st.bar_chart(df)
+            else:
+                st.write("No data generated.")
         elif output.get('type') == 'plan':
             st.markdown("**Optimization Steps:**")
             for step in output.get('steps', []):
                 st.write(f"- {step}")
+        elif output.get('type') == 'prediction':
+             st.markdown("**Selected Features:**")
+             st.write(output.get('features', []))
+             if 'data_preview' in output:
+                 st.caption("Feature Store Preview:")
+                 st.dataframe(pd.DataFrame(output['data_preview']))
 
 # --- Tab 1: Live Query Playground ---
 if mode == "Live Query Playground":
@@ -144,39 +174,112 @@ if mode == "Live Query Playground":
     if st.button("🚀 Execute Query"):
         col_main, col_side = st.columns([2, 1])
 
-        # Run SYNAPSE
-        start = time.time()
-        synapse_out = engines["Project SYNAPSE"].process(query)
-        synapse_lat = (time.time() - start) * 1000
+        # Run ALL engines for Live Comparison
+        results = {}
+        for name, engine in engines.items():
+            start = time.time()
+            try:
+                out = engine.process(query)
+                lat = (time.time() - start) * 1000
+                results[name] = {"out": out, "lat": lat}
+            except Exception as e:
+                results[name] = {"out": {"error": str(e)}, "lat": 0}
 
-        # Run Baseline
-        start = time.time()
-        rag_out = engines["Generic RAG"].process(query)
-        rag_lat = (time.time() - start) * 1000
+        synapse_res = results["Project SYNAPSE"]
 
         with col_main:
-            st.subheader("Execution Flow")
-            if 'trace' in synapse_out:
-                render_trace(synapse_out['trace'])
+            st.subheader("Execution Flow (SYNAPSE)")
+            if 'trace' in synapse_res["out"]:
+                render_trace(synapse_res["out"]['trace'])
 
             st.markdown("---")
-            if 'execution_output' in synapse_out:
-                render_final_execution(synapse_out['execution_output'])
+            if 'execution_output' in synapse_res["out"]:
+                render_final_execution(synapse_res["out"]['execution_output'])
 
         with col_side:
-            st.subheader("Engine Comparison")
+            st.subheader("Live Leaderboard")
 
-            # Display SYNAPSE
-            st.success(f"**Project SYNAPSE**")
-            st.caption(f"Intent: `{synapse_out.get('intent', 'UNKNOWN')}`")
-            render_engine_output("Project SYNAPSE", synapse_out, synapse_lat)
+            # Leaderboard Metrics
+            leaderboard_data = []
+            for name, res in results.items():
+                out = res["out"]
+                cols = len(out.get('columns', []))
+                tables = len(out.get('tables', []))
+                filters = len(out.get('filters', []))
+                lat = res["lat"]
+                leaderboard_data.append({
+                    "Engine": name,
+                    "Latency": f"{lat:.1f}ms",
+                    "Tables": tables,
+                    "Cols": cols,
+                    "Filters": filters
+                })
+
+            st.dataframe(pd.DataFrame(leaderboard_data), hide_index=True)
 
             st.markdown("---")
+            st.subheader("Engine Outputs")
 
-            # Display Baseline
-            render_engine_output("Baseline (Generic RAG)", rag_out, rag_lat)
+            # Display SYNAPSE First
+            st.success(f"**Project SYNAPSE**")
+            st.caption(f"Intent: `{synapse_res['out'].get('intent', 'UNKNOWN')}`")
+            render_engine_output("Project SYNAPSE", synapse_res["out"], synapse_res["lat"])
 
-# --- Tab 2: Benchmark Comparison ---
+            # Display Others
+            for name, res in results.items():
+                if name == "Project SYNAPSE": continue
+                render_engine_output(name, res["out"], res["lat"])
+
+# --- Tab 2: Live Ontology Graph ---
+elif mode == "Live Ontology Graph":
+    st.header("🕸️ Self-Healing Ontology Graph")
+    st.markdown("Visualizing the Tables (Nodes) and Tribal Knowledge (Learned Edges) mined from `V$SQLAREA`.")
+
+    try:
+        import graphviz
+
+        # Build Graph from Synapse Engine state
+        synapse = engines["Project SYNAPSE"]
+
+        # Create Graphviz object
+        dot = graphviz.Digraph(comment='Ontology')
+        dot.attr(rankdir='LR')
+
+        # 1. Add Tables (Nodes)
+        # Limit to top 20 for visibility if many
+        tables_to_show = list(synapse.schema.keys())[:20]
+        for table in tables_to_show:
+            dot.node(table, table, shape='box', style='filled', fillcolor='lightblue')
+
+        # 2. Add Foreign Keys (Hard Edges)
+        for table in tables_to_show:
+            fks = synapse.schema[table].get('foreign_keys', {})
+            for col, target in fks.items():
+                target_table = target.split('.')[0]
+                if target_table in tables_to_show:
+                    dot.edge(table, target_table, label='FK', color='black')
+
+        # 3. Add Learned Tribal Rules (Soft Edges)
+        frequent_joins = synapse.tribal_knowledge.get('frequent_joins', [])
+        for join_tuple, count in frequent_joins:
+            t1, t2 = join_tuple
+            if t1 in tables_to_show and t2 in tables_to_show:
+                dot.edge(t1, t2, label=f'Tribal ({count}x)', color='red', style='dashed', penwidth='2')
+
+        st.graphviz_chart(dot)
+
+        st.markdown("### 🧠 Learned Tribal Rules")
+        st.write("These rules were autonomously mined from historical query logs:")
+        for join_tuple, count in frequent_joins:
+            st.code(f"Frequent Join: {join_tuple[0]} <-> {join_tuple[1]} (Count: {count})")
+
+    except ImportError:
+        st.error("Graphviz not installed. Please install graphviz to view.")
+    except Exception as e:
+        st.error(f"Error rendering graph: {e}")
+
+
+# --- Tab 3: Benchmark Comparison ---
 elif mode == "Benchmark Comparison":
     st.header("📊 Engine Performance Benchmark")
     st.info("Note: These results are from a pre-computed simulation run (`src/benchmark.py`). Live query metrics are shown in the Playground tab.")
@@ -210,7 +313,7 @@ elif mode == "Benchmark Comparison":
             subprocess.run(["python3", "src/benchmark.py"])
             st.experimental_rerun()
 
-# --- Tab 3: Architecture View ---
+# --- Tab 4: Architecture View ---
 elif mode == "Architecture View":
     st.header("Project SYNAPSE Architecture")
 

@@ -5,7 +5,6 @@ import math
 import re
 import os
 import sys
-from datetime import datetime
 
 # Import RealLLM for actual API integration
 try:
@@ -45,12 +44,24 @@ class MockLLM:
     def extract_entities(self, query):
         q = query.upper()
         entities = []
-        if "POD" in q: entities.append("POD_INVENTORY")
-        if "PATCH" in q: entities.append("PATCH_CATALOG")
-        if "LOG" in q or "FAILURE" in q: entities.append("PATCH_EXECUTION_LOGS")
-        if "SR" in q or "TICKET" in q: entities.append("SERVICE_REQUESTS")
-        if "REGION" in q or "US" in q: entities.append("FND_REGIONS")
-        return entities
+        # Dynamic Entity Extraction based on Schema Keys
+        for table in self.schema.keys():
+            # Check for exact table name match or "token overlap"
+            if table in q:
+                entities.append(table)
+            else:
+                # Check description keywords? (Simple simulation)
+                pass
+
+        # Fallback to hardcoded for the demo queries if schema matches default
+        if "POD_INVENTORY" in self.schema:
+            if "POD" in q: entities.append("POD_INVENTORY")
+            if "PATCH" in q: entities.append("PATCH_CATALOG")
+            if "LOG" in q or "FAILURE" in q: entities.append("PATCH_EXECUTION_LOGS")
+            if "SR" in q or "TICKET" in q: entities.append("SERVICE_REQUESTS")
+            if "REGION" in q or "US" in q: entities.append("FND_REGIONS")
+
+        return list(set(entities))
 
 class SynapseEngine:
     def __init__(self, schema_file=None, cbo_file=None, logs_file=None, model="gpt-4o"):
@@ -84,16 +95,21 @@ class SynapseEngine:
         table_pairs = {}
         filters_map = {}
 
-        for log in self.logs:
-            tables = tuple(sorted(log['tables']))
-            if tables not in table_pairs:
-                table_pairs[tables] = 0
-            table_pairs[tables] += 1
+        if isinstance(self.logs, list):
+            for log in self.logs:
+                tables = tuple(sorted(log.get('tables', [])))
+                if not tables: continue
 
-            for table in log['tables']:
-                if table not in filters_map:
-                    filters_map[table] = []
-                filters_map[table].extend(log['filters'])
+                # Only track pairs or groups
+                if len(tables) > 1:
+                    if tables not in table_pairs:
+                        table_pairs[tables] = 0
+                    table_pairs[tables] += 1
+
+                for table in log.get('tables', []):
+                    if table not in filters_map:
+                        filters_map[table] = []
+                    filters_map[table].extend(log.get('filters', []))
 
         self.tribal_knowledge['frequent_joins'] = sorted(table_pairs.items(), key=lambda x: x[1], reverse=True)[:5]
 
@@ -131,25 +147,44 @@ class SynapseEngine:
 
         # --- AGENT 2: Ontology Scout (Phase A) ---
         agent_start = time.time()
+        seed_tables = set()
+
         if self.real_llm:
-            schema_summary = "\n".join([f"{t}: {d['description']}" for t, d in self.schema.items()])
+            # Summarize Schema for prompt efficiency (Limited to first 50 tables)
+            schema_keys = list(self.schema.keys())[:50]
+            schema_summary = "\n".join([f"{t}: {self.schema[t].get('description', '')}" for t in schema_keys])
             extracted_tables = self.real_llm.extract_entities(query, schema_summary)
             seed_tables = set(extracted_tables)
         else:
             seed_tables = set(self.mock_llm.extract_entities(query))
 
-        # Apply Tribal Knowledge
+        # Apply Tribal Knowledge (Frequent Joins)
         tribal_logic = []
-        if "PATCH_CATALOG" in seed_tables and "PATCH_EXECUTION_LOGS" not in seed_tables:
-             seed_tables.add("PATCH_EXECUTION_LOGS")
-             tribal_logic.append("Added PATCH_EXECUTION_LOGS due to frequent join rule.")
+        # Check if any seed table triggers a frequent join rule
+        frequent_joins = self.tribal_knowledge.get('frequent_joins', [])
+
+        current_seeds = list(seed_tables)
+        for join_tuple, count in frequent_joins:
+            # Safer unpacking
+            if len(join_tuple) != 2: continue
+
+            t1, t2 = join_tuple
+            if t1 in seed_tables and t2 not in seed_tables:
+                if t2 in self.schema:
+                    seed_tables.add(t2)
+                    tribal_logic.append(f"Added {t2} (Frequent Join with {t1})")
+            elif t2 in seed_tables and t1 not in seed_tables:
+                 if t1 in self.schema:
+                    seed_tables.add(t1)
+                    tribal_logic.append(f"Added {t1} (Frequent Join with {t2})")
 
         applied_filters = set()
         for table in seed_tables:
-            tribal_filters = self.implicit_filters.get(table, [])
-            for f in tribal_filters:
-                applied_filters.add(f)
-                tribal_logic.append(f"Applied tribal filter on {table}: {f}")
+            if table in self.implicit_filters:
+                tribal_filters = self.implicit_filters[table]
+                for f in tribal_filters:
+                    applied_filters.add(f)
+                    tribal_logic.append(f"Applied tribal filter on {table}: {f}")
 
         seed_tables = list(seed_tables)
         trace.append({
@@ -173,7 +208,7 @@ class SynapseEngine:
 
             for col, stats in table_cols.items():
                 if row_count > 0:
-                    null_ratio = stats['null_count'] / row_count
+                    null_ratio = stats.get('null_count', 0) / row_count
                 else:
                     null_ratio = 1.0
 
@@ -181,7 +216,7 @@ class SynapseEngine:
                     pruned_reasons.append(f"Pruned {table}.{col} (Null Ratio: {null_ratio:.2f})")
                     continue
 
-                if stats['distinct_values'] <= 1 and stats['null_count'] == 0:
+                if stats.get('distinct_values', 10) <= 1 and stats.get('null_count', 0) == 0:
                     pruned_reasons.append(f"Pruned {table}.{col} (Low Entropy)")
                     continue
 
@@ -190,7 +225,7 @@ class SynapseEngine:
         trace.append({
             "agent": "CBO Pruning Agent",
             "action": "Analyzing Column Statistics (Entropy & Nulls)",
-            "input": f"{len(seed_tables)} Tables with potential 100+ columns",
+            "input": f"{len(seed_tables)} Tables",
             "output": f"Selected {len(selected_columns)} Active Columns",
             "details": f"Pruned {len(pruned_reasons)} columns. Top reasons:\n" + "\n".join(pruned_reasons[:3])
         })
@@ -234,29 +269,53 @@ class SynapseEngine:
 
     def _simulate_execution(self, intent, tables, columns, filters):
         """Simulates the final output generation by the specialized swarm."""
+        # Using pure Python dicts to avoid pandas dependency in core engine execution for benchmark
+        # Real impl would use pandas but we need to be safe if environment lacks it
+
+        data_preview = []
+
         if intent == "BI":
+            # Generate mock data
+            data = []
+            for i in range(10):
+                row = {}
+                cat_col = next((c for c in columns if "NAME" in c or "REGION" in c or "TIER" in c or "ID" in c), "Category")
+                num_col = next((c for c in columns if "COUNT" in c or "Load" in c or "CPU" in c or "MEMORY" in c or "NUM" in c), "Value")
+                row[cat_col] = f"Item {i}"
+                row[num_col] = random.randint(10, 100)
+                data.append(row)
+
             return {
                 "type": "chart",
-                "title": "Regional Pod Status",
-                "data": {"US East": 45, "EU West": 30, "APAC": 25},
-                "code": "import plotly.express as px\nfig = px.bar(data, x='Region', y='Count')"
+                "title": f"BI Analysis",
+                "data": data,
+                "code": f"import plotly.express as px\nfig = px.bar(data, x='{cat_col}', y='{num_col}')"
             }
         elif intent == "ML":
+            # Enhanced ML Output: Feature Store Preview
+            for i in range(5):
+                row = {}
+                for col in columns[:5]:
+                    row[col] = random.random() if "RATE" in col or "Prob" in col else random.randint(0, 100)
+                data_preview.append(row)
+
             return {
                 "type": "prediction",
-                "summary": "Forecast: 98% Probability of Memory Breach on Pod-12 in 48 hours.",
-                "features": ["avg_cpu_load", "memory_usage_trend", "patch_version"],
+                "summary": "Forecast: Prediction generated based on selected features.",
+                "features": columns[:5],
+                "data_preview": data_preview,
                 "code": "model = xgb.XGBClassifier()\nmodel.fit(X_train, y_train)\npred = model.predict(X_next_48h)"
             }
         elif intent == "OPTIMIZER":
             return {
                 "type": "plan",
-                "summary": "Generated Zero-Downtime Migration Schedule",
+                "summary": "Generated Optimization Schedule",
+                "constraints": [f"Filter: {f}" for f in filters],
                 "steps": [
-                    "1. Drain connections on Pod-A (02:00 UTC)",
-                    "2. Apply Patch 24C to Pod-B (02:15 UTC)",
-                    "3. Switch Traffic to Pod-B (02:45 UTC)"
+                    "1. Constraint Check Passed (CPU < 80%)",
+                    "2. Resource Allocation Calculated (Bin Packing)",
+                    "3. Schedule Finalized (Zero Overlap)"
                 ],
-                "code": "solver = pywraplp.Solver.CreateSolver('SCIP')\nx = solver.IntVar(0, 1, 'x')"
+                "code": "solver = pywraplp.Solver.CreateSolver('SCIP')\nx = solver.IntVar(0, 1, 'x')\n# Applied Constraints from Tribal Knowledge"
             }
         return {"type": "text", "summary": "Query executed successfully."}
