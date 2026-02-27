@@ -362,13 +362,10 @@ class SynapseEngine:
 
     def _simulate_execution(self, intent, tables, columns, filters):
         """Simulates the final output generation using actual data if available."""
-        # Using local import inside the method only if strictly needed for CSV path
-        # But for benchmark compatibility, we default to pure Python logic unless CSVs are active
-
         # If we have actual dataframes loaded from CSVs, use them!
         if self.csv_files and self.dataframes:
             try:
-                # We can assume pandas is present if we are in this block
+                import pandas as pd
                 import numpy as np
                 primary_table = tables[0] if tables else list(self.dataframes.keys())[0]
                 if primary_table in self.dataframes:
@@ -385,6 +382,8 @@ class SynapseEngine:
                                 "type": "chart",
                                 "title": f"BI Analysis: {cats[0]} vs {nums[0]} (Actual Data)",
                                 "data": chart_df.to_dict(orient='records'),
+                                "x_col": cats[0], # Return explicit X column name
+                                "y_col": nums[0], # Return explicit Y column name
                                 "code": f"df = pd.read_csv(...)\nfig = px.bar(df, x='{cats[0]}', y='{nums[0]}')"
                             }
                         else:
@@ -425,6 +424,8 @@ class SynapseEngine:
                 "type": "chart",
                 "title": f"BI Analysis",
                 "data": data,
+                "x_col": cat_col, # Return explicit X
+                "y_col": num_col, # Return explicit Y
                 "code": f"import plotly.express as px\nfig = px.bar(data, x='{cat_col}', y='{num_col}')"
             }
         elif intent == "ML":

@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import time
 import sys
+# plotly already imported above, no need to re-import or can keep
 import plotly.express as px
 
 # Add src to sys.path to import modules correctly
@@ -156,19 +157,40 @@ def render_final_execution(output):
         if output.get('type') == 'chart':
             if 'data' in output and output['data']:
                 df = pd.DataFrame(output['data'])
-                st.bar_chart(df)
+
+                # Check if explicit columns are provided (for robust rendering)
+                x_col = output.get('x_col')
+                y_col = output.get('y_col')
+
+                if x_col and y_col and x_col in df.columns and y_col in df.columns:
+                    st.bar_chart(df, x=x_col, y=y_col)
+                else:
+                    # Fallback to auto-chart if metadata missing or invalid
+                    # Try to only chart numeric columns to avoid mixed-type errors
+                    numeric_df = df.select_dtypes(include=['number'])
+                    if not numeric_df.empty:
+                        st.bar_chart(numeric_df)
+                    else:
+                        st.warning("Could not auto-render chart from data. Previewing table instead:")
+                        st.dataframe(df)
             else:
                 st.write("No data generated.")
+
         elif output.get('type') == 'plan':
-            st.markdown("**Optimization Steps:**")
+            st.markdown("**Optimization Constraints Applied:**")
+            if 'constraints' in output:
+                 for c in output['constraints']:
+                     st.caption(c)
+            st.markdown("**Steps:**")
             for step in output.get('steps', []):
                 st.write(f"- {step}")
+
         elif output.get('type') == 'prediction':
-             st.markdown("**Selected Features:**")
-             st.write(output.get('features', []))
+             st.markdown("**Feature Store Preview (Top 5 Rows):**")
              if 'data_preview' in output:
-                 st.caption("Feature Store Preview:")
                  st.dataframe(pd.DataFrame(output['data_preview']))
+             else:
+                 st.write(output.get('features', []))
 
 # --- Tab 1: Live Query Playground ---
 if mode == "Live Query Playground":
