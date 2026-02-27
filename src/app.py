@@ -4,7 +4,6 @@ import os
 import pandas as pd
 import time
 import sys
-# plotly already imported above, no need to re-import or can keep
 import plotly.express as px
 
 # Add src to sys.path to import modules correctly
@@ -18,62 +17,75 @@ from engines.synapse import SynapseEngine
 
 # --- Configuration ---
 st.set_page_config(
-    page_title="Project SYNAPSE: The Universal Data Fabric",
-    page_icon="🧠",
+    page_title="Project Synapse",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
+
+# Custom CSS for "Clean/Professional" Look
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    h1, h2, h3 {
+        font-family: 'Helvetica Neue', sans-serif;
+        font-weight: 300;
+    }
+    .stButton>button {
+        width: 100%;
+        border-radius: 4px;
+        height: 3em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+    div[data-testid="stExpander"] details summary p {
+        font-weight: 600;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
 def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
-    # Initialize SynapseEngine first as it might generate the dynamic schema from CSVs
     synapse = SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files)
-
-    # Extract the schema (either from file or CSVs) to share with other engines
-    # This ensures RAG/Graph/Heuristic use the custom data if uploaded
     shared_schema = synapse.schema
-
     return {
-        "Project SYNAPSE": synapse,
-        "Generic RAG": RAGEngine(schema_dict=shared_schema),
-        "GraphRAG": GraphEngine(schema_dict=shared_schema),
-        "Heuristic Baseline": HeuristicEngine(schema_dict=shared_schema)
+        "Synapse": synapse,
+        "RAG": RAGEngine(schema_dict=shared_schema, api_key=api_key),
+        "Graph": GraphEngine(schema_dict=shared_schema, api_key=api_key),
+        "Heuristic": HeuristicEngine(schema_dict=shared_schema, api_key=api_key)
     }
 
-# --- Sidebar ---
+# --- Sidebar (Minimal) ---
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/2560px-Oracle_logo.svg.png", width=150)
-    st.title("Project SYNAPSE")
-    st.markdown("**Universal Situation-Aware Data Fabric**")
-    st.markdown("---")
+    st.header("Configuration")
 
-    # API Key Input
-    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real GPT calls.")
+    # Model Selection (Clean)
+    model_choice = st.selectbox("Model", ["gpt-4o", "gpt-4-turbo"], index=0)
 
-    # Model Selection
-    model_choice = st.selectbox("LLM Model", ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"], index=0)
+    st.divider()
 
-    mode_indicator = "🟡 Simulation Mode (Mock LLM)"
-    if api_key:
-        config.set_openai_key(api_key)
-        mode_indicator = f"🟢 Real AI Mode ({model_choice})"
-
-    st.markdown("---")
-    st.subheader("📁 Data Upload")
-
-    upload_mode = st.radio("Input Format", ["JSON Schema (Advanced)", "CSV Files (Easy)"])
+    # Data Upload
+    st.subheader("Data Source")
+    upload_mode = st.radio("Input Type", ["JSON Schema", "CSV Files"])
 
     custom_schema_path = None
     custom_cbo_path = None
     custom_logs_path = None
     csv_file_paths = []
-    data_source_msg = "🛠️ Mock Data"
+    data_source_msg = "Default Mock Data"
 
-    if upload_mode == "JSON Schema (Advanced)":
-        schema_up = st.file_uploader("Upload Schema (schema.json)", type="json")
-        cbo_up = st.file_uploader("Upload CBO Stats (cbo_stats.json)", type="json")
-        logs_up = st.file_uploader("Upload Query Logs (query_logs.json)", type="json")
+    if upload_mode == "JSON Schema":
+        schema_up = st.file_uploader("Schema JSON", type="json")
+        cbo_up = st.file_uploader("Stats JSON", type="json")
+        logs_up = st.file_uploader("Logs JSON", type="json")
 
         if schema_up and cbo_up and logs_up:
             custom_schema_path = "data/custom_schema.json"
@@ -83,13 +95,11 @@ with st.sidebar:
             with open(custom_schema_path, "wb") as f: f.write(schema_up.getbuffer())
             with open(custom_cbo_path, "wb") as f: f.write(cbo_up.getbuffer())
             with open(custom_logs_path, "wb") as f: f.write(logs_up.getbuffer())
-            st.success("Custom JSON Data Loaded!")
-            data_source_msg = "📂 Custom JSON"
+            data_source_msg = "Custom JSON"
 
-    elif upload_mode == "CSV Files (Easy)":
-        uploaded_csvs = st.file_uploader("Upload CSV Tables", type="csv", accept_multiple_files=True)
+    elif upload_mode == "CSV Files":
+        uploaded_csvs = st.file_uploader("Upload Tables (CSV)", type="csv", accept_multiple_files=True)
         if uploaded_csvs:
-            # Save CSVs
             csv_dir = "data/csv_uploads"
             os.makedirs(csv_dir, exist_ok=True)
             for uploaded_file in uploaded_csvs:
@@ -97,303 +107,169 @@ with st.sidebar:
                 with open(path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
                 csv_file_paths.append(path)
+            data_source_msg = f"{len(csv_file_paths)} CSVs Loaded"
 
-            st.success(f"Loaded {len(csv_file_paths)} CSVs!")
-            data_source_msg = "📊 Custom CSVs"
-
-    # Reload Engines
+    # Load (API Key from Config/Env)
+    api_key = config.openai_api_key
     engines = load_engines(api_key, model_choice, custom_schema_path, custom_cbo_path, custom_logs_path, csv_file_paths)
 
-    st.markdown("---")
-    mode = st.radio("Mode", ["Live Query Playground", "Live Ontology Graph", "Benchmark Comparison", "Architecture View"])
-    st.markdown("---")
-    st.markdown(f"**Status:** {mode_indicator}")
-    st.markdown(f"**Data Source:** {data_source_msg}")
+    st.divider()
+    mode = st.radio("View", ["Query Playground", "Ontology Graph", "Benchmark", "Architecture"])
 
-# --- Helper: Render Engine Output ---
+# --- Helper: Render Clean Output ---
 def render_engine_output(engine_name, result, latency):
-    with st.expander(f"**{engine_name}** (Latency: {latency:.2f}ms)", expanded=True):
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.markdown("#### 🏗️ Selected Tables")
+    with st.expander(f"{engine_name} ({latency:.0f}ms)", expanded=True):
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown("**Tables**")
             if result.get('tables'):
                 for t in result['tables']:
-                    st.code(t, language="sql")
+                    st.text(t)
             else:
-                st.warning("No tables selected")
+                st.caption("None selected")
 
-        with col2:
-            st.markdown("#### 🎯 Selected Columns")
-            if result.get('columns'):
-                st.write(result['columns'])
+        with c2:
+            st.markdown("**Columns**")
+            cols = result.get('columns', [])
+            if cols:
+                st.caption(f"{len(cols)} selected")
+                with st.expander("View List"):
+                    st.write(cols)
             else:
-                st.warning("No columns selected")
+                st.caption("None selected")
 
-        st.markdown("#### 🌪️ Filters & Value Grounding")
+        st.markdown("**Filters**")
         if result.get('filters'):
             for f in result['filters']:
-                st.success(f"Filter Applied: `{f}`")
+                st.code(f, language="sql")
         else:
-            st.caption("No filters applied")
-
-        if 'pruned_columns' in result:
-             st.markdown(f"**✂️ CBO Pruning Efficiency:** Pruned `{result['pruned_columns']}` irrelevant/null columns")
+            st.caption("None applied")
 
 def render_trace(trace):
-    st.subheader("🕵️ Multi-Agent Execution Trace")
+    st.subheader("Cognitive Trace")
     for step in trace:
-        with st.status(f"**{step['agent']}**: {step['action']}", expanded=True):
-            st.write(f"**Input:** {step.get('input')}")
+        with st.expander(f"{step['agent']}", expanded=True):
+            st.markdown(f"**Action:** {step['action']}")
+            st.text(f"Input: {step.get('input')}")
             st.markdown(f"**Output:** `{step.get('output')}`")
             if 'details' in step:
                 st.caption(step['details'])
 
-def render_final_execution(output):
-    st.subheader("🚀 Execution Swarm Output")
-    st.info(f"Summary: {output.get('summary', 'Done')}")
+def render_execution(output):
+    st.subheader("Execution Result")
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if 'code' in output:
-            st.markdown("**Generated Code:**")
-            st.code(output['code'], language="python")
+    if output.get('type') == 'chart':
+        if 'data' in output and output['data']:
+            df = pd.DataFrame(output['data'])
+            x_col = output.get('x_col')
+            y_col = output.get('y_col')
 
-    with col2:
-        if output.get('type') == 'chart':
-            if 'data' in output and output['data']:
-                df = pd.DataFrame(output['data'])
-
-                # Check if explicit columns are provided (for robust rendering)
-                x_col = output.get('x_col')
-                y_col = output.get('y_col')
-
-                if x_col and y_col and x_col in df.columns and y_col in df.columns:
-                    st.bar_chart(df, x=x_col, y=y_col)
-                else:
-                    # Fallback to auto-chart if metadata missing or invalid
-                    # Try to only chart numeric columns to avoid mixed-type errors
-                    numeric_df = df.select_dtypes(include=['number'])
-                    if not numeric_df.empty:
-                        st.bar_chart(numeric_df)
-                    else:
-                        st.warning("Could not auto-render chart from data. Previewing table instead:")
-                        st.dataframe(df)
+            if x_col and y_col and x_col in df.columns and y_col in df.columns:
+                fig = px.bar(df, x=x_col, y=y_col, template="plotly_white")
+                st.plotly_chart(fig, use_container_width=True)
             else:
-                st.write("No data generated.")
+                st.dataframe(df, use_container_width=True)
 
-        elif output.get('type') == 'plan':
-            st.markdown("**Optimization Constraints Applied:**")
-            if 'constraints' in output:
-                 for c in output['constraints']:
-                     st.caption(c)
-            st.markdown("**Steps:**")
-            for step in output.get('steps', []):
-                st.write(f"- {step}")
+    elif output.get('type') == 'plan':
+        for step in output.get('steps', []):
+            st.markdown(f"- {step}")
 
-        elif output.get('type') == 'prediction':
-             st.markdown("**Feature Store Preview (Top 5 Rows):**")
-             if 'data_preview' in output:
-                 st.dataframe(pd.DataFrame(output['data_preview']))
-             else:
-                 st.write(output.get('features', []))
+    elif output.get('type') == 'prediction':
+        if 'data_preview' in output:
+            st.caption("Feature Store Preview")
+            st.dataframe(pd.DataFrame(output['data_preview']), use_container_width=True)
 
-# --- Tab 1: Live Query Playground ---
-if mode == "Live Query Playground":
-    st.header("🧠 Live Cognitive Query Engine")
-    st.markdown(f"**Current Mode:** {mode_indicator} | **Data:** {data_source_msg}")
+# --- Views ---
 
-    # Preset Queries
-    query_option = st.selectbox("Sample Queries", [
-        "Show me active pods in US East region",
-        "List critical patch failures last week",
-        "Predict pod memory usage for next upgrade",
-        "Custom Query..."
-    ])
+# 1. Playground
+if mode == "Query Playground":
+    st.title("Project Synapse")
+    st.caption(f"Connected to: {data_source_msg}")
 
-    if query_option == "Custom Query...":
-        query = st.text_input("Enter your natural language query:", "Find service requests for pod failure")
-    else:
-        query = query_option
+    c_query, c_btn = st.columns([4, 1])
+    with c_query:
+        query = st.text_input("Natural Language Query", "Show me active pods in US East")
+    with c_btn:
+        st.write("") # Spacer
+        st.write("")
+        run = st.button("Run")
 
-    if st.button("🚀 Execute Query"):
-        col_main, col_side = st.columns([2, 1])
+    if run:
+        # Run Synapse
+        start = time.time()
+        synapse_res = engines["Synapse"].process(query)
+        synapse_lat = (time.time() - start) * 1000
 
-        # Run ALL engines for Live Comparison
-        results = {}
-        for name, engine in engines.items():
-            start = time.time()
-            try:
-                out = engine.process(query)
-                lat = (time.time() - start) * 1000
-                results[name] = {"out": out, "lat": lat}
-            except Exception as e:
-                results[name] = {"out": {"error": str(e)}, "lat": 0}
+        # Run Baseline (RAG)
+        start = time.time()
+        rag_res = engines["RAG"].process(query)
+        rag_lat = (time.time() - start) * 1000
 
-        synapse_res = results["Project SYNAPSE"]
+        # Layout
+        c_main, c_side = st.columns([2, 1])
 
-        with col_main:
-            st.subheader("Execution Flow (SYNAPSE)")
-            if 'trace' in synapse_res["out"]:
-                render_trace(synapse_res["out"]['trace'])
+        with c_main:
+            if 'execution_output' in synapse_res:
+                render_execution(synapse_res['execution_output'])
+            st.divider()
+            if 'trace' in synapse_res:
+                render_trace(synapse_res['trace'])
 
-            st.markdown("---")
-            if 'execution_output' in synapse_res["out"]:
-                render_final_execution(synapse_res["out"]['execution_output'])
+        with c_side:
+            st.subheader("Engine Comparison")
+            render_engine_output("Synapse", synapse_res, synapse_lat)
+            render_engine_output("Standard RAG", rag_res, rag_lat)
 
-        with col_side:
-            st.subheader("Live Leaderboard")
-
-            # Leaderboard Metrics
-            leaderboard_data = []
-            for name, res in results.items():
-                out = res["out"]
-                cols = len(out.get('columns', [])) if 'columns' in out else 0
-                tables = len(out.get('tables', [])) if 'tables' in out else 0
-                filters = len(out.get('filters', [])) if 'filters' in out else 0
-                lat = res["lat"]
-                leaderboard_data.append({
-                    "Engine": name,
-                    "Latency": f"{lat:.1f}ms",
-                    "Tables": tables,
-                    "Cols": cols,
-                    "Filters": filters
-                })
-
-            st.dataframe(pd.DataFrame(leaderboard_data), hide_index=True)
-
-            st.markdown("---")
-            st.subheader("Engine Outputs")
-
-            # Display SYNAPSE First
-            st.success(f"**Project SYNAPSE**")
-            st.caption(f"Intent: `{synapse_res['out'].get('intent', 'UNKNOWN')}`")
-            render_engine_output("Project SYNAPSE", synapse_res["out"], synapse_res["lat"])
-
-            # Display Others
-            for name, res in results.items():
-                if name == "Project SYNAPSE": continue
-                render_engine_output(name, res["out"], res["lat"])
-
-# --- Tab 2: Live Ontology Graph ---
-elif mode == "Live Ontology Graph":
-    st.header("🕸️ Self-Healing Ontology Graph")
-    st.markdown("Visualizing the Tables (Nodes) and Tribal Knowledge (Learned Edges) mined from `V$SQLAREA`.")
-
+# 2. Ontology Graph
+elif mode == "Ontology Graph":
+    st.title("Ontology Graph")
     try:
         import graphviz
+        synapse = engines["Synapse"]
+        dot = graphviz.Digraph()
+        dot.attr(rankdir='LR', bgcolor='transparent')
+        dot.attr('node', shape='box', style='filled', fillcolor='#f0f2f6', fontname='Helvetica', color='white')
+        dot.attr('edge', color='#b0b0b0')
 
-        # Build Graph from Synapse Engine state
-        synapse = engines["Project SYNAPSE"]
+        tables = list(synapse.schema.keys())[:20]
+        for t in tables:
+            dot.node(t, t)
 
-        # Create Graphviz object
-        dot = graphviz.Digraph(comment='Ontology')
-        dot.attr(rankdir='LR')
+        # FKs
+        for t in tables:
+            for col, target in synapse.schema[t].get('foreign_keys', {}).items():
+                target_t = target.split('.')[0]
+                if target_t in tables:
+                    dot.edge(t, target_t)
 
-        # 1. Add Tables (Nodes)
-        # Limit to top 20 for visibility if many
-        tables_to_show = list(synapse.schema.keys())[:20]
-        for table in tables_to_show:
-            dot.node(table, table, shape='box', style='filled', fillcolor='lightblue')
+        st.graphviz_chart(dot, use_container_width=True)
+    except:
+        st.error("Graphviz missing")
 
-        # 2. Add Foreign Keys (Hard Edges)
-        for table in tables_to_show:
-            fks = synapse.schema[table].get('foreign_keys', {})
-            for col, target in fks.items():
-                target_table = target.split('.')[0]
-                if target_table in tables_to_show:
-                    dot.edge(table, target_table, label='FK', color='black')
-
-        # 3. Add Learned Tribal Rules (Soft Edges)
-        frequent_joins = synapse.tribal_knowledge.get('frequent_joins', [])
-        for join_tuple, count in frequent_joins:
-            if len(join_tuple) == 2:
-                t1, t2 = join_tuple
-                if t1 in tables_to_show and t2 in tables_to_show:
-                    dot.edge(t1, t2, label=f'Tribal ({count}x)', color='red', style='dashed', penwidth='2')
-
-        st.graphviz_chart(dot)
-
-        if synapse.csv_files:
-            st.markdown("### 📊 Custom CSV Relationships")
-            st.write("Relationships inferred from shared column names in uploaded files:")
-            for table in tables_to_show:
-                fks = synapse.schema[table].get('foreign_keys', {})
-                for col, target in fks.items():
-                    if target.split('.')[0] in tables_to_show:
-                        st.code(f"{table}.{col} -> {target}")
-
-        st.markdown("### 🧠 Learned Tribal Rules")
-        st.write("These rules were autonomously mined from historical query logs:")
-        for join_tuple, count in frequent_joins:
-            st.code(f"Frequent Join: {join_tuple} (Count: {count})")
-
-    except ImportError:
-        st.error("Graphviz not installed. Please install graphviz to view.")
-    except Exception as e:
-        st.error(f"Error rendering graph: {e}")
-
-
-# --- Tab 3: Benchmark Comparison ---
-elif mode == "Benchmark Comparison":
-    st.header("📊 Engine Performance Benchmark")
-    st.info("Note: These results are from a pre-computed simulation run (`src/benchmark.py`). Live query metrics are shown in the Playground tab.")
-
+# 3. Benchmark
+elif mode == "Benchmark":
+    st.title("Performance Benchmark")
     if os.path.exists("benchmark_results.csv"):
         df = pd.read_csv("benchmark_results.csv")
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
-        # Summary Metrics
-        col1, col2, col3 = st.columns(3)
-        synapse_df = df[df['Engine'] == 'Project SYNAPSE']
-        if not synapse_df.empty:
-            best_acc = synapse_df['Filter Accuracy'].mean()
-            best_lat = synapse_df['Latency (ms)'].mean()
+        c1, c2 = st.columns(2)
+        with c1:
+            st.caption("Latency (ms)")
+            st.bar_chart(df, x="Engine", y="Latency (ms)")
+        with c2:
+            st.caption("Recall")
+            st.bar_chart(df, x="Engine", y="Table Recall")
 
-            col1.metric("SYNAPSE Accuracy", f"{best_acc*100:.1f}%", "+45% vs RAG")
-            col2.metric("SYNAPSE Latency", f"{best_lat:.2f} ms", "-90% vs LLM")
-            col3.metric("Pruned Columns", "15 avg", "Compute Saved")
-
-        st.dataframe(df, use_container_width=True)
-
-        st.subheader("Latency Comparison")
-        st.bar_chart(df, x="Engine", y="Latency (ms)", color="Engine")
-
-        st.subheader("Recall Comparison")
-        st.bar_chart(df, x="Engine", y="Table Recall", color="Engine")
-
-    else:
-        st.warning("Benchmark results not found. Run `src/benchmark.py` first.")
-        if st.button("Run Benchmark Now"):
-            import subprocess
-            subprocess.run(["python3", "src/benchmark.py"])
-            st.experimental_rerun()
-
-# --- Tab 4: Architecture View ---
-elif mode == "Architecture View":
-    st.header("Project SYNAPSE Architecture")
-
+# 4. Architecture
+elif mode == "Architecture":
+    st.title("System Architecture")
     st.markdown("""
-    ### The Core Problem: Column Explosion
-    Standard LLMs fail when connected to 15,000+ Oracle tables.
+    **Project Synapse** acts as a central nervous system for enterprise data interaction.
 
-    ### The Solution: The 4-Stage Funnel
-
-    **Phase A: Self-Healing Ontology**
-    *   **Input:** Natural Language
-    *   **Action:** Mining `V$SQLAREA` for tribal knowledge (e.g., "Active Pods" = `STATUS_CD='ACTIVE'`)
-    *   **Output:** 5-10 Seed Tables
-
-    **Phase B: CBO Telemetry Pruning**
-    *   **Input:** 8,000 candidate columns
-    *   **Action:** Checking `DBA_TAB_COL_STATISTICS` for Entropy and Nulls.
-    *   **Output:** 50 Active Columns (99% Reduction)
-
-    **Phase C: Value Grounding**
-    *   **Input:** User string "US East"
-    *   **Action:** Bloom Filter / Levenshtein check against DB.
-    *   **Output:** `REGION_NAME LIKE '%US East%'` (Zero Hallucinations)
+    1. **Ontology Scout:** Learns tribal knowledge from query logs.
+    2. **CBO Pruner:** Reduces search space by 99% using database statistics.
+    3. **Value Grounding:** Maps vague intent to precise database enums.
+    4. **Execution Swarm:** Generates code for BI, ML, or Optimization tasks.
     """)
-
-    st.code("""
-    User Query -> [Phase A: Ontology] -> [Phase B: CBO Pruning] -> [Phase C: Value Grounding] -> Arrow Memory -> [Execution Swarm]
-    """, language="text")
+    st.code("Query -> Ontology -> CBO Pruning -> Value Grounding -> Execution", language="text")

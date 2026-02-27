@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from functools import lru_cache
 
 class RealLLM:
     def __init__(self, api_key, model="gpt-4o"):
@@ -18,11 +19,11 @@ class RealLLM:
             print(f"Error initializing OpenAI: {e}")
             self.available = False
 
-    def _call_gpt(self, system_prompt, user_prompt):
+    @lru_cache(maxsize=100)
+    def _call_gpt_cached(self, system_prompt, user_prompt):
+        """Cached wrapper for GPT calls to simulate low-latency CNS behavior."""
         if not self.available:
-            print("OpenAI client not available.")
             return None
-
         try:
             print(f"[DEBUG] Calling {self.model}...")
             response = self.client.chat.completions.create(
@@ -37,6 +38,9 @@ class RealLLM:
         except Exception as e:
             print(f"OpenAI API Error: {e}")
             return None
+
+    def _call_gpt(self, system_prompt, user_prompt):
+        return self._call_gpt_cached(system_prompt, user_prompt)
 
     def extract_intent(self, query):
         """

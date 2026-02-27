@@ -23,18 +23,14 @@ except ImportError:
     class Config:
         def __init__(self):
             self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
-            self.data_dir = "data"
-            self.schema_file = "data/schema.json"
-            self.cbo_file = "data/cbo_stats.json"
-            self.logs_file = "data/query_logs.json"
     config = Config()
 
 class RAGEngine:
-    def __init__(self, schema_file=None, schema_dict=None):
+    def __init__(self, schema_file="data/schema.json", schema_dict=None, api_key=None):
         if schema_dict:
             self.schema = schema_dict
         else:
-            self.schema_file = schema_file or config.schema_file or "data/schema.json"
+            self.schema_file = schema_file or "data/schema.json"
             with open(self.schema_file, 'r') as f:
                 self.schema = json.load(f)
 
@@ -45,9 +41,10 @@ class RAGEngine:
             self.embeddings[table] = text.lower()
 
         self.llm = None
-        if config.openai_api_key and RealLLM:
+        key_to_use = api_key or config.openai_api_key
+        if key_to_use and RealLLM:
              try:
-                self.llm = RealLLM(config.openai_api_key)
+                self.llm = RealLLM(key_to_use)
              except Exception as e:
                 pass
 

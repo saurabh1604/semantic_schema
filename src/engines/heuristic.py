@@ -1,5 +1,5 @@
 class HeuristicEngine:
-    def __init__(self, schema_file="data/schema.json", schema_dict=None):
+    def __init__(self, schema_file="data/schema.json", schema_dict=None, api_key=None):
         import json
         if schema_dict:
             self.schema = schema_dict
