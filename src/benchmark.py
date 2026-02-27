@@ -9,6 +9,12 @@ from engines.rag import RAGEngine
 from engines.graph_rag import GraphEngine
 from engines.synapse import SynapseEngine
 from engines.aegis import AegisEngine
+# New Engines
+from engines.react import ReActEngine
+from engines.hyde import HyDEEngine
+from engines.ensemble import EnsembleVotingEngine
+from engines.self_correction import SelfCorrectionEngine
+from engines.semantic_layer import SemanticLayerEngine
 
 DATA_DIR = "data"
 RESULTS_FILE = "benchmark_results.csv"
@@ -56,12 +62,22 @@ def calculate_metrics(expected, actual):
 def run_benchmark():
     ground_truth = load_ground_truth()
 
+    # Pre-instantiate base engines for Ensemble
+    synapse = SynapseEngine()
+    graph = GraphEngine()
+    heuristic = HeuristicEngine()
+
     engines = {
-        "Heuristic": HeuristicEngine(),
+        "Heuristic": heuristic,
         "Generic RAG": RAGEngine(),
-        "GraphRAG": GraphEngine(),
-        "Project SYNAPSE": SynapseEngine(),
-        "Project AEGIS": AegisEngine()
+        "GraphRAG": graph,
+        "Project SYNAPSE": synapse,
+        "Project AEGIS": AegisEngine(),
+        "ReAct Agent": ReActEngine(),
+        "HyDE Retrieval": HyDEEngine(),
+        "Ensemble Voting": EnsembleVotingEngine(engines=[synapse, graph, heuristic]),
+        "Self-Correction": SelfCorrectionEngine(),
+        "Semantic Layer": SemanticLayerEngine()
     }
 
     results = []

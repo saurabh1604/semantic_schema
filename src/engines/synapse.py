@@ -66,6 +66,7 @@ class MockLLM:
 
 class SynapseEngine:
     def __init__(self, schema_file=None, cbo_file=None, logs_file=None, model="gpt-4o", csv_files=None, api_key=None):
+        self.name = "Project SYNAPSE"
         self.schema_file = schema_file or config.schema_file
         self.cbo_file = cbo_file or config.cbo_file
         self.logs_file = logs_file or config.logs_file
@@ -344,7 +345,7 @@ class SynapseEngine:
         trace.append({
             "agent": "CBO Pruning Agent",
             "action": "Analyzing Column Statistics (Entropy & Nulls)",
-            "input": f"{len(seed_tables)} Tables",
+            "input": f"Tables",
             "output": f"Selected {len(selected_columns)} Active Columns",
             "details": f"Pruned {len(pruned_reasons)} columns. Top reasons:\n" + "\n".join(pruned_reasons[:3])
         })

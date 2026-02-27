@@ -19,6 +19,7 @@ from config import config
 
 class AegisEngine:
     def __init__(self, schema_file=None, cbo_file=None, logs_file=None, model="gpt-4o", csv_files=None, api_key=None):
+        self.name = "Project AEGIS"
         self.schema_file = schema_file or config.schema_file
         self.cbo_file = cbo_file or config.cbo_file
         self.logs_file = logs_file or config.logs_file
@@ -87,7 +88,7 @@ class AegisEngine:
         if self.llm:
             # Proposer uses LLM to cast a wide net
             schema_keys = list(self.schema.keys())[:50]
-            summary = "\n".join([f"{t}: {self.schema[t].get('description','')}" for t in schema_keys])
+            schema_summary = "\n".join([f"{t}: {self.schema[t].get('description','')}" for t in schema_keys])
             proposed_tables = self.llm.extract_entities(query, summary)
         else:
             # Proposer uses fuzzy match (aggressive)

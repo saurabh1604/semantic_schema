@@ -27,6 +27,7 @@ except ImportError:
 
 class RAGEngine:
     def __init__(self, schema_file="data/schema.json", schema_dict=None, api_key=None):
+        self.name = "Generic RAG"
         if schema_dict:
             self.schema = schema_dict
         else:

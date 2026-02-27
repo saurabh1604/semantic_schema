@@ -15,6 +15,12 @@ from engines.rag import RAGEngine
 from engines.graph_rag import GraphEngine
 from engines.synapse import SynapseEngine
 from engines.aegis import AegisEngine
+# New Engines
+from engines.react import ReActEngine
+from engines.hyde import HyDEEngine
+from engines.ensemble import EnsembleVotingEngine
+from engines.self_correction import SelfCorrectionEngine
+from engines.semantic_layer import SemanticLayerEngine
 
 # --- Configuration ---
 st.set_page_config(
@@ -59,12 +65,32 @@ def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, 
     aegis = AegisEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files, api_key=api_key)
 
     shared_schema = synapse.schema
+
+    # Instantiate Base Engines
+    heuristic = HeuristicEngine(schema_dict=shared_schema, api_key=api_key)
+    rag = RAGEngine(schema_dict=shared_schema, api_key=api_key)
+    graph = GraphEngine(schema_dict=shared_schema, api_key=api_key)
+
+    # Instantiate Novel Engines
+    react = ReActEngine(schema_dict=shared_schema, api_key=api_key)
+    hyde = HyDEEngine(schema_dict=shared_schema, api_key=api_key)
+    self_correct = SelfCorrectionEngine(schema_dict=shared_schema, api_key=api_key)
+    semantic = SemanticLayerEngine(schema_dict=shared_schema, api_key=api_key)
+
+    # Ensemble needs references to others
+    ensemble = EnsembleVotingEngine(engines=[synapse, graph, heuristic], schema_dict=shared_schema, api_key=api_key)
+
     return {
         "Synapse": synapse,
-        "Aegis": aegis, # The Challenger
-        "RAG": RAGEngine(schema_dict=shared_schema, api_key=api_key),
-        "Graph": GraphEngine(schema_dict=shared_schema, api_key=api_key),
-        "Heuristic": HeuristicEngine(schema_dict=shared_schema, api_key=api_key)
+        "Aegis": aegis,
+        "RAG": rag,
+        "Graph": graph,
+        "Heuristic": heuristic,
+        "ReAct Agent": react,
+        "HyDE Retrieval": hyde,
+        "Ensemble Voting": ensemble,
+        "Self-Correction": self_correct,
+        "Semantic Layer": semantic
     }
 
 # --- Sidebar (Minimal) ---
