@@ -1,7 +1,9 @@
 class HeuristicEngine:
     def __init__(self, schema_file="data/schema.json"):
         import json
-        with open(schema_file, 'r') as f:
+        self.schema_file = schema_file or "data/schema.json"
+
+        with open(self.schema_file, 'r') as f:
             self.schema = json.load(f)
 
     def process(self, query):

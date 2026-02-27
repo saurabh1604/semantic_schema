@@ -10,7 +10,6 @@ import sys
 try:
     from llm_client import RealLLM
 except ImportError:
-    # If path issue
     try:
         from .llm_client import RealLLM
     except ImportError:
@@ -21,7 +20,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     from config import config
 except ImportError:
-    # Fallback if run directly or path issue
     class Config:
         def __init__(self):
             self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
@@ -33,7 +31,8 @@ except ImportError:
 
 class RAGEngine:
     def __init__(self, schema_file=None):
-        self.schema_file = schema_file or config.schema_file
+        self.schema_file = schema_file or config.schema_file or "data/schema.json"
+
         with open(self.schema_file, 'r') as f:
             self.schema = json.load(f)
 
