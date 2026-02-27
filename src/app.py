@@ -120,7 +120,7 @@ with st.sidebar:
         st.session_state['query_history'] = []
 
     if st.session_state['query_history']:
-        st.caption(f"History: {len(st.session_state['query_history'])} queries")
+        st.caption(f"History: {len(st.session_state['query_history'])} entries")
         history_df = pd.DataFrame(st.session_state['query_history'])
         csv_data = history_df.to_csv(index=False).encode('utf-8')
         st.download_button(
@@ -227,32 +227,36 @@ if mode == "Query Playground":
             except Exception as e:
                 results[name] = {"out": {"error": str(e)}, "lat": 0}
 
-        synapse_res = results["Synapse"]
-
-        # Log to History
+        # Log to History (Append ALL engines)
         if 'query_history' not in st.session_state:
             st.session_state['query_history'] = []
 
-        log_entry = {
-            "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "Query": query,
-            "Engine": "Synapse",
-            "Intent": synapse_res["out"].get('intent', 'UNKNOWN'),
-            "Latency (ms)": round(synapse_res["lat"], 2),
-            "Tables": len(synapse_res["out"].get('tables', [])),
-            "Columns": len(synapse_res["out"].get('columns', [])),
-            "Filters": len(synapse_res["out"].get('filters', []))
-        }
-        st.session_state['query_history'].append(log_entry)
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        for name, res in results.items():
+            out = res["out"]
+            log_entry = {
+                "Timestamp": timestamp,
+                "Query": query,
+                "Engine": name,
+                "Intent": out.get('intent', 'UNKNOWN'),
+                "Latency (ms)": round(res["lat"], 2),
+                "Tables Selected": len(out.get('tables', [])),
+                "Columns Selected": len(out.get('columns', [])),
+                "Filters Applied": len(out.get('filters', [])),
+                "Result Summary": "Success" if "error" not in out else f"Error: {out['error']}"
+            }
+            st.session_state['query_history'].append(log_entry)
+
+        synapse_res = results["Synapse"]
 
         # Layout
         c_main, c_side = st.columns([2, 1])
 
         with c_main:
-            if 'execution_output' in synapse_res["out"]:
+            if 'execution_output' in synapse_res.get("out", {}):
                 render_execution(synapse_res["out"]['execution_output'])
             st.divider()
-            if 'trace' in synapse_res["out"]:
+            if 'trace' in synapse_res.get("out", {}):
                 render_trace(synapse_res["out"]['trace'])
 
         with c_side:
