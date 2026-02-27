@@ -142,16 +142,34 @@ class AegisEngine:
 
         for t in approved_tables:
             cols = self.schema[t]['columns']
-            # Judge logic: "Select only non-null columns matching query keywords"
-            for col in cols:
-                # Check CBO
-                stats = self.cbo_stats.get(t, {}).get('columns', {}).get(col, {})
-                if stats.get('null_count', 0) == row_count and row_count > 0:
-                    continue # Judge agrees with Critic: Skip empty col
+            row_count = self.cbo_stats.get(t, {}).get('row_count', 100)
 
-                # Check Semantics (Simulated Judge)
-                if any(w in col.lower() for w in query.lower().split()) or self.llm:
-                    final_columns.append(col)
+            # Use LLM for precise column selection if available
+            if self.llm:
+                selected = self.llm.select_columns(query, t, cols)
+                if selected and isinstance(selected, list):
+                    for col in selected:
+                        # Double-check CBO even if LLM picked it (The Judge is strict)
+                        stats = self.cbo_stats.get(t, {}).get('columns', {}).get(col, {})
+                        if stats.get('null_count', 0) == row_count and row_count > 0:
+                            # Vetoed by Judge despite LLM proposal
+                            pass
+                        else:
+                            final_columns.append(col)
+                else:
+                    # Fallback if LLM failed
+                    for col in cols:
+                        if any(w in col.lower() for w in query.lower().split()):
+                            final_columns.append(col)
+            else:
+                # Heuristic Fallback
+                for col in cols:
+                    stats = self.cbo_stats.get(t, {}).get('columns', {}).get(col, {})
+                    if stats.get('null_count', 0) == row_count and row_count > 0:
+                        continue
+
+                    if any(w in col.lower() for w in query.lower().split()):
+                        final_columns.append(col)
 
         trace.append({
             "agent": "Aegis Judge",
@@ -164,7 +182,7 @@ class AegisEngine:
         return {
             "intent": "AEGIS_DEBATE",
             "tables": approved_tables,
-            "columns": final_columns,
+            "columns": list(set(final_columns)),
             "filters": [], # Aegis focuses on Table/Col correctness first
             "trace": trace,
             "execution_time": time.time() - start_time
