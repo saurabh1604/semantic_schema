@@ -24,6 +24,7 @@ class RealLLM:
             return None
 
         try:
+            print(f"[DEBUG] Calling {self.model}...")
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[

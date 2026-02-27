@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import time
 import sys
+# plotly already imported above, no need to re-import or can keep
+import plotly.express as px
 
 # Add src to sys.path to import modules correctly
 sys.path.append(os.path.join(os.path.dirname(__file__)))
@@ -24,15 +26,14 @@ st.set_page_config(
 
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
-def load_engines():
+def load_engines(api_key=None, model="gpt-4o"):
+    # Re-initialize engines with the new key and model
     return {
-        "Project SYNAPSE": SynapseEngine(),
+        "Project SYNAPSE": SynapseEngine(model=model),
         "Generic RAG": RAGEngine(),
         "GraphRAG": GraphEngine(),
         "Heuristic Baseline": HeuristicEngine()
     }
-
-engines = load_engines()
 
 # --- Sidebar ---
 with st.sidebar:
@@ -42,20 +43,24 @@ with st.sidebar:
     st.markdown("---")
 
     # API Key Input
-    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real GPT-4o calls.")
+    api_key = st.text_input("OpenAI API Key (Optional)", type="password", help="Enter your key to enable real GPT calls.")
+
+    # Model Selection
+    model_choice = st.selectbox("LLM Model", ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"], index=0)
+
+    mode_indicator = "🟡 Simulation Mode (Mock LLM)"
     if api_key:
         config.set_openai_key(api_key)
+        # Force reload if key/model changes
         st.cache_resource.clear()
-        engines = load_engines()
-        st.success("API Key Set! (Real AI Mode Active)")
-        mode_indicator = "🟢 Real AI Mode (GPT-4o)"
+        engines = load_engines(api_key, model_choice)
+        st.success(f"Connected to {model_choice} 🟢")
+        mode_indicator = f"🟢 Real AI Mode ({model_choice})"
     else:
-        mode_indicator = "🟡 Simulation Mode (Mock LLM)"
+        engines = load_engines() # Load default mock engines
 
     st.markdown("---")
-
     mode = st.radio("Mode", ["Live Query Playground", "Benchmark Comparison", "Architecture View"])
-
     st.markdown("---")
     st.caption(f"Status: {mode_indicator}")
 
@@ -89,67 +94,87 @@ def render_engine_output(engine_name, result, latency):
         if 'pruned_columns' in result:
              st.markdown(f"**✂️ CBO Pruning Efficiency:** Pruned `{result['pruned_columns']}` irrelevant/null columns")
 
+def render_trace(trace):
+    st.subheader("🕵️ Multi-Agent Execution Trace")
+    for step in trace:
+        with st.status(f"**{step['agent']}**: {step['action']}", expanded=True):
+            st.write(f"**Input:** {step.get('input')}")
+            st.markdown(f"**Output:** `{step.get('output')}`")
+            if 'details' in step:
+                st.caption(step['details'])
+
+def render_final_execution(output):
+    st.subheader("🚀 Execution Swarm Output")
+    st.info(f"Summary: {output.get('summary', 'Done')}")
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if 'code' in output:
+            st.markdown("**Generated Code:**")
+            st.code(output['code'], language="python")
+
+    with col2:
+        if output.get('type') == 'chart':
+            data = output.get('data', {})
+            df = pd.DataFrame(list(data.items()), columns=['Category', 'Value'])
+            st.bar_chart(df.set_index('Category'))
+        elif output.get('type') == 'plan':
+            st.markdown("**Optimization Steps:**")
+            for step in output.get('steps', []):
+                st.write(f"- {step}")
+
 # --- Tab 1: Live Query Playground ---
 if mode == "Live Query Playground":
     st.header("🧠 Live Cognitive Query Engine")
     st.markdown(f"**Current Mode:** {mode_indicator}")
-    st.markdown("Test the **Natural Language -> Schema -> Value** translation in real-time.")
 
     # Preset Queries
-    query = st.selectbox("Sample Queries", [
+    query_option = st.selectbox("Sample Queries", [
         "Show me active pods in US East region",
         "List critical patch failures last week",
         "Predict pod memory usage for next upgrade",
         "Custom Query..."
     ])
 
-    if query == "Custom Query...":
+    if query_option == "Custom Query...":
         query = st.text_input("Enter your natural language query:", "Find service requests for pod failure")
+    else:
+        query = query_option
 
     if st.button("🚀 Execute Query"):
-        col_main, col_process = st.columns([2, 1])
+        col_main, col_side = st.columns([2, 1])
+
+        # Run SYNAPSE
+        start = time.time()
+        synapse_out = engines["Project SYNAPSE"].process(query)
+        synapse_lat = (time.time() - start) * 1000
+
+        # Run Baseline
+        start = time.time()
+        rag_out = engines["Generic RAG"].process(query)
+        rag_lat = (time.time() - start) * 1000
 
         with col_main:
-            st.subheader("Results")
+            st.subheader("Execution Flow")
+            if 'trace' in synapse_out:
+                render_trace(synapse_out['trace'])
 
-            # Run SYNAPSE
-            start = time.time()
-            synapse_out = engines["Project SYNAPSE"].process(query)
-            synapse_lat = (time.time() - start) * 1000
+            st.markdown("---")
+            if 'execution_output' in synapse_out:
+                render_final_execution(synapse_out['execution_output'])
 
-            # Run Baseline (Generic RAG) for comparison
-            start = time.time()
-            rag_out = engines["Generic RAG"].process(query)
-            rag_lat = (time.time() - start) * 1000
+        with col_side:
+            st.subheader("Engine Comparison")
 
-            # Display SYNAPSE (The Hero)
-            st.success(f"**Project SYNAPSE Identified Intent:** `{synapse_out.get('intent', 'UNKNOWN')}`")
+            # Display SYNAPSE
+            st.success(f"**Project SYNAPSE**")
+            st.caption(f"Intent: `{synapse_out.get('intent', 'UNKNOWN')}`")
             render_engine_output("Project SYNAPSE", synapse_out, synapse_lat)
 
             st.markdown("---")
 
             # Display Baseline
             render_engine_output("Baseline (Generic RAG)", rag_out, rag_lat)
-
-        with col_process:
-            st.subheader("🧠 Thought Process")
-            st.markdown("#### 1. Intent & Entities")
-            if api_key:
-                st.info("Called OpenAI GPT-4o for Intent Classification & Entity Extraction.")
-            else:
-                st.info("Simulated Intent Classification based on keywords.")
-            st.write(f"Entities: {synapse_out.get('tables', [])}")
-
-            st.markdown("#### 2. Tribal Knowledge")
-            st.caption("Checking V$SQLAREA for implicit rules...")
-            if synapse_out.get('filters'):
-                st.write("Found implicit filters from historical logs.")
-            else:
-                st.write("No implicit filters found.")
-
-            st.markdown("#### 3. CBO Telemetry")
-            st.caption("Querying DBA_TAB_COL_STATISTICS...")
-            st.write(f"Pruned {synapse_out.get('pruned_columns', 0)} columns based on Null % and Entropy.")
 
 # --- Tab 2: Benchmark Comparison ---
 elif mode == "Benchmark Comparison":
