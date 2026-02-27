@@ -113,6 +113,23 @@ with st.sidebar:
     # Default model to "gpt-5.2" as requested
     engines = load_engines(api_key, "gpt-5.2", custom_schema_path, custom_cbo_path, custom_logs_path, csv_file_paths)
 
+    st.divider()
+
+    # Query History & Download
+    if 'query_history' not in st.session_state:
+        st.session_state['query_history'] = []
+
+    if st.session_state['query_history']:
+        st.caption(f"History: {len(st.session_state['query_history'])} queries")
+        history_df = pd.DataFrame(st.session_state['query_history'])
+        csv_data = history_df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Query Log (CSV)",
+            data=csv_data,
+            file_name=f"synapse_logs_{int(time.time())}.csv",
+            mime="text/csv"
+        )
+
     if st.button("Reload System"):
         st.cache_resource.clear()
         st.rerun()
@@ -212,14 +229,30 @@ if mode == "Query Playground":
 
         synapse_res = results["Synapse"]
 
+        # Log to History
+        if 'query_history' not in st.session_state:
+            st.session_state['query_history'] = []
+
+        log_entry = {
+            "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "Query": query,
+            "Engine": "Synapse",
+            "Intent": synapse_res["out"].get('intent', 'UNKNOWN'),
+            "Latency (ms)": round(synapse_res["lat"], 2),
+            "Tables": len(synapse_res["out"].get('tables', [])),
+            "Columns": len(synapse_res["out"].get('columns', [])),
+            "Filters": len(synapse_res["out"].get('filters', []))
+        }
+        st.session_state['query_history'].append(log_entry)
+
         # Layout
         c_main, c_side = st.columns([2, 1])
 
         with c_main:
-            if 'execution_output' in synapse_res.get("out", {}):
+            if 'execution_output' in synapse_res["out"]:
                 render_execution(synapse_res["out"]['execution_output'])
             st.divider()
-            if 'trace' in synapse_res.get("out", {}):
+            if 'trace' in synapse_res["out"]:
                 render_trace(synapse_res["out"]['trace'])
 
         with c_side:
