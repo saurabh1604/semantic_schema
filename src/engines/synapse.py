@@ -179,6 +179,11 @@ class SynapseEngine:
                     tribal_logic.append(f"Added {t1} (Frequent Join with {t2})")
 
         applied_filters = set()
+        # Be conservative with automatic filter application if user didn't ask for it
+        # Only apply if it doesn't conflict? For POC, we apply but log it.
+        # But for "Find all pods", applying "IS_CRITICAL" is bad.
+        # Simple heuristic: If query is broad "Find all", maybe skip restrictive filters?
+        # For now, we apply them as they are "Tribal Knowledge" (e.g. "Active Revenue excludes test accounts")
         for table in seed_tables:
             if table in self.implicit_filters:
                 tribal_filters = self.implicit_filters[table]
@@ -235,15 +240,32 @@ class SynapseEngine:
         query_upper = query.upper()
         grounding_logic = []
 
-        if "US EAST" in query_upper and "FND_REGIONS" in seed_tables:
-             f = "REGION_NAME LIKE '%US East%'"
-             applied_filters.add(f)
-             grounding_logic.append(f"Mapped 'US East' -> {f} using Levenshtein distance.")
+        if self.real_llm:
+            # Use Real LLM to map user query tokens to WHERE clauses based on selected columns
+            # We summarize columns for the LLM
+            table_columns_summary = []
+            for table in seed_tables:
+                cols = self.schema[table].get('columns', [])
+                table_columns_summary.append(f"Table {table}: {', '.join(cols[:20])}") # limit to 20 cols
 
-        if "CRITICAL" in query_upper and "PATCH_CATALOG" in seed_tables:
-            f = "IS_CRITICAL = 'Y'"
-            applied_filters.add(f)
-            grounding_logic.append(f"Mapped 'Critical' -> {f} using Bloom Filter lookup.")
+            summary_text = "\n".join(table_columns_summary)
+            grounded_clauses = self.real_llm.ground_value(query, summary_text)
+
+            for clause in grounded_clauses:
+                applied_filters.add(clause)
+                grounding_logic.append(f"LLM Mapped: {clause}")
+
+        else:
+            # Heuristic Grounding for Mock Mode
+            if "US EAST" in query_upper and "FND_REGIONS" in seed_tables:
+                 f = "REGION_NAME LIKE '%US East%'"
+                 applied_filters.add(f)
+                 grounding_logic.append(f"Mapped 'US East' -> {f} using Levenshtein distance.")
+
+            if "CRITICAL" in query_upper and "PATCH_CATALOG" in seed_tables:
+                f = "IS_CRITICAL = 'Y'"
+                applied_filters.add(f)
+                grounding_logic.append(f"Mapped 'Critical' -> {f} using Bloom Filter lookup.")
 
         trace.append({
             "agent": "Value Grounding Agent",

@@ -47,9 +47,9 @@ class RealLLM:
 
         system = """You are an AI classifier for an enterprise Oracle system.
         Classify the user query into exactly one of these categories:
-        - BI (Business Intelligence, Reporting, dashboards)
-        - ML (Machine Learning, predictions, forecasting, root cause analysis)
-        - OPTIMIZER (Scheduling, planning, constraints, migration)
+        - BI (Business Intelligence, Reporting, dashboards, finding data, listing entities)
+        - ML (Machine Learning, predictions, forecasting, root cause analysis, future trends)
+        - OPTIMIZER (Scheduling, planning, constraints, migration, solving allocation problems)
 
         Output ONLY the category name."""
 
@@ -77,11 +77,8 @@ class RealLLM:
             return []
 
         try:
-            # Clean up potential markdown formatting
             cleaned_result = result.replace("```json", "").replace("```", "").strip()
-            # If the LLM returned a plain string list or comma separated, try to handle it
             if not cleaned_result.startswith("["):
-                 # Fallback parsing attempt
                  if "," in cleaned_result:
                     return [x.strip() for x in cleaned_result.split(",")]
                  return [cleaned_result]
@@ -103,6 +100,32 @@ class RealLLM:
         Return a JSON list of column names ONLY."""
 
         result = self._call_gpt(system, query)
+        try:
+            cleaned_result = result.replace("```json", "").replace("```", "").strip()
+            return json.loads(cleaned_result)
+        except:
+            return []
+
+    def ground_value(self, query, table_columns):
+        """
+        Map user tokens to database WHERE clauses.
+        """
+        if not self.available:
+            return []
+
+        system = f"""You are a Data Grounding Agent.
+        The user query contains vague terms (e.g., "phx", "failed", "recent").
+        Map them to valid SQL WHERE clauses based on these columns:
+        {table_columns}
+
+        Example: "pods in phx" -> "REGION_NAME LIKE '%Phoenix%'" or "DATA_CENTER = 'PHX'"
+
+        Return a JSON list of SQL condition strings. Example: ["REGION_NAME LIKE '%Phoenix%'"]
+        If no mapping found, return []."""
+
+        result = self._call_gpt(system, query)
+        print(f"[DEBUG] Value Grounding Result: {result}")
+
         try:
             cleaned_result = result.replace("```json", "").replace("```", "").strip()
             return json.loads(cleaned_result)

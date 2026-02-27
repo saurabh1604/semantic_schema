@@ -4,7 +4,6 @@ import os
 import pandas as pd
 import time
 import sys
-# plotly already imported above, no need to re-import or can keep
 import plotly.express as px
 
 # Add src to sys.path to import modules correctly
@@ -63,10 +62,10 @@ with st.sidebar:
     custom_schema_path = None
     custom_cbo_path = None
     custom_logs_path = None
+    data_source_msg = "🛠️ Mock Data"
 
     if schema_up and cbo_up and logs_up:
         # Save to temp and use
-        # For simplicity in this session, we can write to 'data/custom_...'
         custom_schema_path = "data/custom_schema.json"
         custom_cbo_path = "data/custom_cbo_stats.json"
         custom_logs_path = "data/custom_query_logs.json"
@@ -75,6 +74,7 @@ with st.sidebar:
         with open(custom_cbo_path, "wb") as f: f.write(cbo_up.getbuffer())
         with open(custom_logs_path, "wb") as f: f.write(logs_up.getbuffer())
         st.success("Custom Data Loaded!")
+        data_source_msg = "📂 Custom Upload"
 
     # Reload Engines if key/model/data changes
     # We use st.session_state to track changes if needed, but st.cache_resource + args works
@@ -83,7 +83,8 @@ with st.sidebar:
     st.markdown("---")
     mode = st.radio("Mode", ["Live Query Playground", "Live Ontology Graph", "Benchmark Comparison", "Architecture View"])
     st.markdown("---")
-    st.caption(f"Status: {mode_indicator}")
+    st.markdown(f"**Status:** {mode_indicator}")
+    st.markdown(f"**Data Source:** {data_source_msg}")
 
 # --- Helper: Render Engine Output ---
 def render_engine_output(engine_name, result, latency):
@@ -156,7 +157,7 @@ def render_final_execution(output):
 # --- Tab 1: Live Query Playground ---
 if mode == "Live Query Playground":
     st.header("🧠 Live Cognitive Query Engine")
-    st.markdown(f"**Current Mode:** {mode_indicator}")
+    st.markdown(f"**Current Mode:** {mode_indicator} | **Data:** {data_source_msg}")
 
     # Preset Queries
     query_option = st.selectbox("Sample Queries", [
@@ -262,16 +263,17 @@ elif mode == "Live Ontology Graph":
         # 3. Add Learned Tribal Rules (Soft Edges)
         frequent_joins = synapse.tribal_knowledge.get('frequent_joins', [])
         for join_tuple, count in frequent_joins:
-            t1, t2 = join_tuple
-            if t1 in tables_to_show and t2 in tables_to_show:
-                dot.edge(t1, t2, label=f'Tribal ({count}x)', color='red', style='dashed', penwidth='2')
+            if len(join_tuple) == 2:
+                t1, t2 = join_tuple
+                if t1 in tables_to_show and t2 in tables_to_show:
+                    dot.edge(t1, t2, label=f'Tribal ({count}x)', color='red', style='dashed', penwidth='2')
 
         st.graphviz_chart(dot)
 
         st.markdown("### 🧠 Learned Tribal Rules")
         st.write("These rules were autonomously mined from historical query logs:")
         for join_tuple, count in frequent_joins:
-            st.code(f"Frequent Join: {join_tuple[0]} <-> {join_tuple[1]} (Count: {count})")
+            st.code(f"Frequent Join: {join_tuple} (Count: {count})")
 
     except ImportError:
         st.error("Graphviz not installed. Please install graphviz to view.")
