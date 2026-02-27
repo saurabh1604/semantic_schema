@@ -132,10 +132,24 @@ class SynapseEngine:
                 # Build CBO Stats
                 col_stats = {}
                 for col in df.columns:
-                    col_stats[col] = {
+                    n_unique = int(df[col].nunique())
+                    stats = {
                         "null_count": int(df[col].isnull().sum()),
-                        "distinct_values": int(df[col].nunique())
+                        "distinct_values": n_unique
                     }
+
+                    # Capture Data Profile for Enums (Low Cardinality)
+                    if n_unique > 0 and n_unique < 20:
+                        # Store top values
+                        try:
+                            # Convert to list of strings for serialization
+                            top_vals = df[col].dropna().unique().tolist()
+                            # Limit to 20 just in case
+                            stats["top_values"] = [str(v) for v in top_vals[:20]]
+                        except:
+                            pass
+
+                    col_stats[col] = stats
 
                 self.cbo_stats[table_name] = {
                     "row_count": len(df),
@@ -284,7 +298,25 @@ class SynapseEngine:
             table_cols = self.cbo_stats[table]['columns']
             row_count = self.cbo_stats[table]['row_count']
 
+            # Semantic Column Selection (New Feature: Ask LLM to prune irrelevant columns)
+            semantic_candidates = []
+            if self.real_llm:
+                semantic_candidates = self.real_llm.select_columns(query, table, list(table_cols.keys()))
+            else:
+                # Mock Mode: Fallback to all columns (or simple keyword match)
+                semantic_candidates = list(table_cols.keys()) # Keep all for now in mock to pass benchmark recall
+
             for col, stats in table_cols.items():
+                # 1. Semantic Check (If Real LLM available, prioritize its selection)
+                if self.real_llm and col not in semantic_candidates:
+                    # But don't prune immediately, CBO might save it? No, intent is king.
+                    # Wait, LLM might miss "JOIN keys".
+                    # For safety, keep if it looks like a key or was semantically selected.
+                    if "ID" not in col.upper():
+                        pruned_reasons.append(f"Pruned {table}.{col} (Semantic Irrelevance)")
+                        continue
+
+                # 2. CBO Check (Nulls/Entropy)
                 if row_count > 0:
                     null_ratio = stats.get('null_count', 0) / row_count
                 else:
@@ -314,12 +346,24 @@ class SynapseEngine:
         grounding_logic = []
 
         if self.real_llm:
-            table_columns_summary = []
+            # Build Rich Data Profile Summary
+            table_profiles = []
             for table in seed_tables:
-                cols = self.schema[table].get('columns', [])
-                table_columns_summary.append(f"Table {table}: {', '.join(cols[:20])}")
+                cols_desc = []
+                # Check CBO stats for profiles
+                if table in self.cbo_stats:
+                    for col, stats in self.cbo_stats[table]['columns'].items():
+                        if 'top_values' in stats:
+                            cols_desc.append(f"{col} (Enum: {stats['top_values']})")
+                        else:
+                            cols_desc.append(col)
+                else:
+                    cols_desc = self.schema[table].get('columns', [])
 
-            summary_text = "\n".join(table_columns_summary)
+                # Limit to 50 items to avoid token overflow
+                table_profiles.append(f"Table {table}: {', '.join(cols_desc[:50])}")
+
+            summary_text = "\n".join(table_profiles)
             grounded_clauses = self.real_llm.ground_value(query, summary_text)
 
             for clause in grounded_clauses:
