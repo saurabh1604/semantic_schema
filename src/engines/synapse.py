@@ -65,7 +65,7 @@ class MockLLM:
         return list(set(entities))
 
 class SynapseEngine:
-    def __init__(self, schema_file=None, cbo_file=None, logs_file=None, model="gpt-4o", csv_files=None):
+    def __init__(self, schema_file=None, cbo_file=None, logs_file=None, model="gpt-4o", csv_files=None, api_key=None):
         self.schema_file = schema_file or config.schema_file
         self.cbo_file = cbo_file or config.cbo_file
         self.logs_file = logs_file or config.logs_file
@@ -81,11 +81,18 @@ class SynapseEngine:
 
         self.mock_llm = MockLLM(self.schema_file)
         self.real_llm = None
-        if config.openai_api_key and RealLLM:
+
+        # Dependency Injection Logic for API Key
+        key_to_use = api_key or config.openai_api_key
+
+        if key_to_use and RealLLM:
              try:
-                self.real_llm = RealLLM(config.openai_api_key, model=self.model)
+                self.real_llm = RealLLM(key_to_use, model=self.model)
+                print(f"[INFO] SynapseEngine initialized in REAL MODE with model {self.model}")
              except Exception as e:
                 print(f"Error initializing RealLLM: {e}")
+        else:
+             print("[INFO] SynapseEngine initialized in MOCK MODE")
 
         # Build Self-Healing Ontology
         self.tribal_knowledge = {}
@@ -102,7 +109,6 @@ class SynapseEngine:
 
     def _load_from_csvs(self):
         # We assume pandas is available if user is uploading CSVs via Streamlit
-        # But wrap in try/except for safety in minimal envs
         try:
             import pandas as pd
         except ImportError:
@@ -129,7 +135,7 @@ class SynapseEngine:
                     "foreign_keys": {}
                 }
 
-                # Build CBO Stats
+                # Build CBO Stats with Data Profiles
                 col_stats = {}
                 for col in df.columns:
                     n_unique = int(df[col].nunique())
@@ -246,21 +252,24 @@ class SynapseEngine:
 
         current_seeds = list(seed_tables)
         for join_tuple, count in frequent_joins:
+            # Safer unpacking
             if len(join_tuple) != 2: continue
 
             t1, t2 = join_tuple
+            # Verify tables exist in current schema (Custom Data Fix)
+            if t1 not in self.schema or t2 not in self.schema: continue
+
             if t1 in seed_tables and t2 not in seed_tables:
-                if t2 in self.schema:
-                    seed_tables.add(t2)
-                    tribal_logic.append(f"Added {t2} (Frequent Join with {t1})")
+                seed_tables.add(t2)
+                tribal_logic.append(f"Added {t2} (Frequent Join with {t1})")
             elif t2 in seed_tables and t1 not in seed_tables:
-                 if t1 in self.schema:
-                    seed_tables.add(t1)
-                    tribal_logic.append(f"Added {t1} (Frequent Join with {t2})")
+                seed_tables.add(t1)
+                tribal_logic.append(f"Added {t1} (Frequent Join with {t2})")
 
         # Also infer joins for CSVs based on shared keys if not in tribal logs
         if self.csv_files:
             for t1 in list(seed_tables):
+                if t1 not in self.schema: continue
                 for t2, details in self.schema.items():
                     if t1 == t2 or t2 in seed_tables: continue
                     # Check for FK
