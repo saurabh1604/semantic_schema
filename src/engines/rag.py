@@ -30,16 +30,18 @@ except ImportError:
     config = Config()
 
 class RAGEngine:
-    def __init__(self, schema_file=None):
-        self.schema_file = schema_file or config.schema_file or "data/schema.json"
-
-        with open(self.schema_file, 'r') as f:
-            self.schema = json.load(f)
+    def __init__(self, schema_file=None, schema_dict=None):
+        if schema_dict:
+            self.schema = schema_dict
+        else:
+            self.schema_file = schema_file or config.schema_file or "data/schema.json"
+            with open(self.schema_file, 'r') as f:
+                self.schema = json.load(f)
 
         # Simulate simple "Embeddings" by just using TF-IDF logic or basic string matching
         self.embeddings = {}
         for table, details in self.schema.items():
-            text = f"{table} " + " ".join(details['columns']) + " " + details['description']
+            text = f"{table} " + " ".join(details['columns']) + " " + details.get('description', '')
             self.embeddings[table] = text.lower()
 
         self.llm = None

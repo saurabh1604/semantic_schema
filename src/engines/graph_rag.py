@@ -1,11 +1,12 @@
 class GraphEngine:
-    def __init__(self, schema_file="data/schema.json"):
+    def __init__(self, schema_file="data/schema.json", schema_dict=None):
         import json
-        # Handle None explicitly if passed from app.py
-        self.schema_file = schema_file or "data/schema.json"
-
-        with open(self.schema_file, 'r') as f:
-            self.schema = json.load(f)
+        if schema_dict:
+            self.schema = schema_dict
+        else:
+            self.schema_file = schema_file or "data/schema.json"
+            with open(self.schema_file, 'r') as f:
+                self.schema = json.load(f)
 
         # Build a simple graph: Bidirectional Adjacency List
         self.adj_list = {}
@@ -29,19 +30,25 @@ class GraphEngine:
         start_time = time.time()
 
         # Step 1: Find Seeds (Fuzzy Matching Logic)
-        query = query.lower()
+        query_lower = query.lower()
         query_words = set(query.split())
         seed_tables = []
 
         for table in self.schema:
-            table_tokens = set(table.lower().split('_'))
-            # Check for overlap
-            overlap = table_tokens & query_words
-            if overlap:
-                 seed_tables.append(table)
+            table_lower = table.lower()
+
+            # Substring Check (More lenient for seeds)
+            if any(part in query_lower for part in table_lower.split('_') if len(part) > 3):
+                seed_tables.append(table)
+            else:
+                # Fallback Token Check
+                table_tokens = set(table_lower.split('_'))
+                if table_tokens & query_words:
+                     seed_tables.append(table)
 
         # Step 2: Traverse Graph (Simulated Steiner Tree / Path Finding)
         if len(seed_tables) >= 2:
+            # Try to connect the first two seeds
             path = self._find_shortest_path(seed_tables[0], seed_tables[1])
             if path:
                 seed_tables.extend(path)
@@ -50,13 +57,11 @@ class GraphEngine:
         # Very lenient selection for "Graph" approach: If the column is interesting or matches
         selected_columns = []
         for table in set(seed_tables):
-            for col in self.schema[table]['columns']:
-                col_tokens = set(col.lower().split('_'))
-                # Need overlap of at least 2 chars if token is short, else exact match
-                for token in col_tokens:
-                    if token in query_words:
-                         if len(token) > 2: # Avoid matching 'id', 'is', 'a'
-                            selected_columns.append(col)
+            if table in self.schema: # Safety check
+                for col in self.schema[table]['columns']:
+                    col_lower = col.lower()
+                    if any(word in col_lower for word in query_words) or any(part in query_lower for part in col_lower.split('_') if len(part) > 3):
+                        selected_columns.append(col)
 
         return {
             "tables": list(set(seed_tables)),

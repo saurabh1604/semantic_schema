@@ -27,12 +27,18 @@ st.set_page_config(
 # --- Initialize Engines (Cached) ---
 @st.cache_resource
 def load_engines(api_key=None, model="gpt-4o", schema_file=None, cbo_file=None, logs_file=None, csv_files=None):
-    # Re-initialize engines with the new key, model, and potentially custom data paths
+    # Initialize SynapseEngine first as it might generate the dynamic schema from CSVs
+    synapse = SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files)
+
+    # Extract the schema (either from file or CSVs) to share with other engines
+    # This ensures RAG/Graph/Heuristic use the custom data if uploaded
+    shared_schema = synapse.schema
+
     return {
-        "Project SYNAPSE": SynapseEngine(model=model, schema_file=schema_file, cbo_file=cbo_file, logs_file=logs_file, csv_files=csv_files),
-        "Generic RAG": RAGEngine(schema_file=schema_file),
-        "GraphRAG": GraphEngine(schema_file=schema_file),
-        "Heuristic Baseline": HeuristicEngine(schema_file=schema_file)
+        "Project SYNAPSE": synapse,
+        "Generic RAG": RAGEngine(schema_dict=shared_schema),
+        "GraphRAG": GraphEngine(schema_dict=shared_schema),
+        "Heuristic Baseline": HeuristicEngine(schema_dict=shared_schema)
     }
 
 # --- Sidebar ---
